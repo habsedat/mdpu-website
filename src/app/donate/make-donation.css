@@ -1,6 +1,7 @@
 /* Make Donation Page Styles */
 .make-donation {
   /* Main container styles */
+  min-height: 100vh;
 }
 
 .make-donation .impact-areas-grid {
