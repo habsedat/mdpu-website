@@ -1,0 +1,362 @@
+/* Leadership Team Page Styles */
+.leadership-team {
+  /* Main container styles */
+}
+
+.leadership-team .leadership-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+}
+
+.leadership-team .leadership-card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.leadership-team .leadership-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+}
+
+.leadership-team .leadership-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: center;
+}
+
+.leadership-team .leadership-avatar {
+  width: 4rem;
+  height: 4rem;
+  background: linear-gradient(135deg, var(--brand-forest) 0%, var(--brand-gold) 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+  color: white;
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.leadership-team .leadership-name {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--brand-charcoal);
+  margin-bottom: 0.25rem;
+}
+
+.leadership-team .leadership-position {
+  color: var(--brand-forest);
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 0.5rem;
+}
+
+.leadership-team .leadership-location {
+  color: #6b7280;
+  font-size: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.leadership-team .leadership-term {
+  color: #6b7280;
+  font-size: 0.75rem;
+  font-style: italic;
+}
+
+.leadership-team .leadership-details {
+  padding: 1.5rem;
+}
+
+.leadership-team .leadership-bio {
+  color: #374151;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  margin-bottom: 1rem;
+}
+
+.leadership-team .leadership-contact {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.leadership-team .contact-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.75rem;
+  color: #6b7280;
+}
+
+.leadership-team .contact-item a {
+  color: var(--brand-forest);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.leadership-team .contact-item a:hover {
+  color: var(--brand-gold);
+}
+
+.leadership-team .principles-section {
+  background: linear-gradient(135deg, var(--brand-forest) 0%, var(--brand-clay) 100%);
+  color: white;
+}
+
+.leadership-team .principles-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+}
+
+.leadership-team .principle-item {
+  text-align: center;
+  padding: 1.5rem;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.leadership-team .principle-item:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-4px);
+}
+
+.leadership-team .principle-icon {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+  color: white;
+}
+
+.leadership-team .service-icon {
+  background-color: var(--brand-forest);
+}
+
+.leadership-team .excellence-icon {
+  background-color: var(--brand-clay);
+}
+
+.leadership-team .vision-icon {
+  background-color: var(--brand-gold);
+}
+
+.leadership-team .integrity-icon {
+  background-color: var(--brand-forest);
+}
+
+.leadership-team .principle-title {
+  font-weight: 600;
+  color: white;
+  margin-bottom: 0.5rem;
+}
+
+.leadership-team .principle-description {
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.leadership-team .contact-section {
+  background: var(--brand-sand);
+}
+
+.leadership-team .contact-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.leadership-team .contact-card {
+  background: white;
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.leadership-team .contact-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.leadership-team .contact-card h3 {
+  color: var(--brand-charcoal);
+  font-weight: 600;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.leadership-team .contact-email {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+.leadership-team .contact-email a {
+  color: var(--brand-forest);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.leadership-team .contact-email a:hover {
+  color: var(--brand-gold);
+}
+
+.leadership-team .cta-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.leadership-team .cta-button {
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  font-size: 1.125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+}
+
+.leadership-team .cta-button.primary {
+  background: var(--brand-forest);
+  color: white;
+  border: none;
+}
+
+.leadership-team .cta-button.primary:hover {
+  background: var(--brand-forest);
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+.leadership-team .cta-button.secondary {
+  background: transparent;
+  color: var(--brand-forest);
+  border: 2px solid var(--brand-forest);
+}
+
+.leadership-team .cta-button.secondary:hover {
+  background: var(--brand-forest);
+  color: white;
+  transform: translateY(-2px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .leadership-team .leadership-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .leadership-team .principles-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .leadership-team .contact-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .leadership-team .cta-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .leadership-team .leadership-card {
+    margin-bottom: 1rem;
+  }
+}
+
+/* Animation classes */
+.leadership-team .fade-in {
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.leadership-team .slide-in-up {
+  animation: slideInUp 0.8s ease-out;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.leadership-team .stagger-animation > * {
+  animation: fadeIn 0.8s ease-out;
+  animation-fill-mode: both;
+}
+
+.leadership-team .stagger-animation > *:nth-child(1) { animation-delay: 0.1s; }
+.leadership-team .stagger-animation > *:nth-child(2) { animation-delay: 0.2s; }
+.leadership-team .stagger-animation > *:nth-child(3) { animation-delay: 0.3s; }
+.leadership-team .stagger-animation > *:nth-child(4) { animation-delay: 0.4s; }
+
+.leadership-team .bounce-in {
+  animation: bounceIn 0.8s ease-out;
+}
+
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.leadership-team .pulse-animation {
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}

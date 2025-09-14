@@ -1,0 +1,202 @@
+/* About Us Page Styles */
+.about-us {
+  /* Main container styles */
+}
+
+.about-us .story-section {
+  background: linear-gradient(135deg, var(--brand-sand) 0%, #ffffff 100%);
+}
+
+.about-us .story-content {
+  line-height: 1.8;
+}
+
+.about-us .motto-card {
+  background: var(--brand-sand);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.about-us .motto-card:hover {
+  transform: translateY(-2px);
+}
+
+.about-us .motto-quote {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--brand-forest);
+  font-style: italic;
+  text-align: center;
+  margin: 1rem 0;
+}
+
+.about-us .mission-vision-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 2rem;
+}
+
+.about-us .mission-card {
+  border-left: 4px solid var(--brand-forest);
+  transition: all 0.3s ease;
+}
+
+.about-us .vision-card {
+  border-left: 4px solid var(--brand-gold);
+  transition: all 0.3s ease;
+}
+
+.about-us .mission-card:hover,
+.about-us .vision-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.about-us .values-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.about-us .value-card {
+  text-align: center;
+  transition: all 0.3s ease;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.about-us .value-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+}
+
+.about-us .value-icon {
+  width: 3rem;
+  height: 3rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+  transition: all 0.3s ease;
+}
+
+.about-us .value-card:hover .value-icon {
+  transform: scale(1.1);
+}
+
+.about-us .unity-icon {
+  background-color: rgba(20, 83, 45, 0.1);
+  color: var(--brand-forest);
+}
+
+.about-us .excellence-icon {
+  background-color: rgba(146, 64, 14, 0.1);
+  color: var(--brand-clay);
+}
+
+.about-us .service-icon {
+  background-color: rgba(217, 119, 6, 0.1);
+  color: var(--brand-gold);
+}
+
+.about-us .progress-icon {
+  background-color: rgba(20, 83, 45, 0.1);
+  color: var(--brand-forest);
+}
+
+.about-us .heritage-icon {
+  background-color: rgba(146, 64, 14, 0.1);
+  color: var(--brand-clay);
+}
+
+.about-us .community-icon {
+  background-color: rgba(217, 119, 6, 0.1);
+  color: var(--brand-gold);
+}
+
+.about-us .contact-section {
+  background: linear-gradient(135deg, var(--brand-forest) 0%, var(--brand-clay) 100%);
+  color: white;
+}
+
+.about-us .contact-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.about-us .contact-item {
+  text-align: center;
+  padding: 1.5rem;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.about-us .contact-item:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-4px);
+}
+
+.about-us .contact-icon {
+  width: 3rem;
+  height: 3rem;
+  background-color: var(--brand-forest);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+  color: white;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .about-us .mission-vision-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .about-us .values-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .about-us .contact-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .about-us .motto-quote {
+    font-size: 1.25rem;
+  }
+}
+
+/* Animation classes */
+.about-us .fade-in-up {
+  animation: fadeInUp 0.8s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.about-us .stagger-animation > * {
+  animation: fadeInUp 0.8s ease-out;
+  animation-fill-mode: both;
+}
+
+.about-us .stagger-animation > *:nth-child(1) { animation-delay: 0.1s; }
+.about-us .stagger-animation > *:nth-child(2) { animation-delay: 0.2s; }
+.about-us .stagger-animation > *:nth-child(3) { animation-delay: 0.3s; }
+.about-us .stagger-animation > *:nth-child(4) { animation-delay: 0.4s; }
+.about-us .stagger-animation > *:nth-child(5) { animation-delay: 0.5s; }
+.about-us .stagger-animation > *:nth-child(6) { animation-delay: 0.6s; }

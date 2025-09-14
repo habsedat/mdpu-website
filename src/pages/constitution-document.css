@@ -1,0 +1,119 @@
+/* Constitution Document Page Styles */
+
+.constitution-document {
+  /* Page-specific styles for constitution document */
+}
+
+.constitution-document .constitution-overview {
+  /* Constitution overview section styles */
+}
+
+.constitution-document .document-info {
+  /* Document information card styles */
+}
+
+.constitution-document .constitution-sections {
+  /* Constitution sections container styles */
+}
+
+.constitution-document .constitution-article {
+  /* Individual article card styles */
+  border-left: 4px solid var(--brand-forest);
+  transition: box-shadow 0.3s ease;
+}
+
+.constitution-document .constitution-article:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.constitution-document .key-principles {
+  /* Key principles section styles */
+}
+
+.constitution-document .principle-card {
+  /* Individual principle card styles */
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.constitution-document .principle-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.constitution-document .principle-icon {
+  /* Principle icon container styles */
+  background: rgba(20, 83, 45, 0.1);
+  border-radius: 50%;
+  transition: background-color 0.3s ease;
+}
+
+.constitution-document .principle-card:hover .principle-icon {
+  background: rgba(20, 83, 45, 0.2);
+}
+
+.constitution-document .motto-section {
+  /* Motto section styles */
+  background: linear-gradient(135deg, var(--brand-sand) 0%, rgba(20, 83, 45, 0.05) 100%);
+}
+
+.constitution-document .motto-quote {
+  /* Motto quote styles */
+  color: var(--brand-forest);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.constitution-document .cta-section {
+  /* Call to action section styles */
+}
+
+.constitution-document .cta-button {
+  /* CTA button styles */
+  transition: all 0.3s ease;
+}
+
+.constitution-document .cta-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .constitution-document .constitution-article {
+    border-left: 3px solid var(--brand-forest);
+  }
+  
+  .constitution-document .motto-quote {
+    font-size: 2rem;
+  }
+  
+  .constitution-document .principle-card {
+    margin-bottom: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .constitution-document .motto-quote {
+    font-size: 1.5rem;
+  }
+  
+  .constitution-document .cta-button {
+    width: 100%;
+    margin-bottom: 0.5rem;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .constitution-document .cta-section {
+    display: none;
+  }
+  
+  .constitution-document .constitution-article {
+    break-inside: avoid;
+    border-left: 2px solid var(--brand-forest);
+  }
+  
+  .constitution-document .principle-card {
+    break-inside: avoid;
+  }
+}
