@@ -1,0 +1,323 @@
+/* Upcoming Events Page Styles */
+.upcoming-events {
+  /* Main container styles */
+}
+
+.upcoming-events .meeting-schedule-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 2rem;
+}
+
+.upcoming-events .meeting-card {
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.upcoming-events .meeting-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+}
+
+.upcoming-events .general-meeting {
+  border-left: 4px solid var(--brand-forest);
+}
+
+.upcoming-events .executive-meeting {
+  border-left: 4px solid var(--brand-clay);
+}
+
+.upcoming-events .meeting-icon {
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-right: 0.75rem;
+}
+
+.upcoming-events .meeting-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.upcoming-events .meeting-detail {
+  display: flex;
+  align-items: center;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.upcoming-events .meeting-detail-icon {
+  width: 1rem;
+  height: 1rem;
+  margin-right: 0.5rem;
+  color: #6b7280;
+}
+
+.upcoming-events .events-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.upcoming-events .event-card {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.upcoming-events .event-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15);
+}
+
+.upcoming-events .event-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.upcoming-events .event-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--brand-charcoal);
+  margin-bottom: 0.5rem;
+}
+
+.upcoming-events .event-description {
+  color: #6b7280;
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.upcoming-events .event-details {
+  padding: 1.5rem;
+}
+
+.upcoming-events .event-detail {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.75rem;
+  font-size: 0.875rem;
+  color: #374151;
+}
+
+.upcoming-events .event-detail-icon {
+  width: 1rem;
+  height: 1rem;
+  margin-right: 0.5rem;
+  color: var(--brand-forest);
+}
+
+.upcoming-events .event-type-badge {
+  display: inline-block;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.upcoming-events .event-type-general {
+  background-color: rgba(20, 83, 45, 0.1);
+  color: var(--brand-forest);
+}
+
+.upcoming-events .event-type-executive {
+  background-color: rgba(146, 64, 14, 0.1);
+  color: var(--brand-clay);
+}
+
+.upcoming-events .event-type-special {
+  background-color: rgba(217, 119, 6, 0.1);
+  color: var(--brand-gold);
+}
+
+.upcoming-events .guidelines-section {
+  background: linear-gradient(135deg, var(--brand-forest) 0%, var(--brand-clay) 100%);
+  color: white;
+}
+
+.upcoming-events .guidelines-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.upcoming-events .guideline-card {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  padding: 2rem;
+  transition: all 0.3s ease;
+}
+
+.upcoming-events .guideline-card:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-4px);
+}
+
+.upcoming-events .guideline-title {
+  color: white;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+.upcoming-events .guideline-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.upcoming-events .guideline-item {
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 0.5rem;
+  padding-left: 1rem;
+  position: relative;
+  font-size: 0.875rem;
+}
+
+.upcoming-events .guideline-item::before {
+  content: "•";
+  color: var(--brand-gold);
+  font-weight: bold;
+  position: absolute;
+  left: 0;
+}
+
+.upcoming-events .cta-section {
+  background: var(--brand-sand);
+}
+
+.upcoming-events .cta-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.upcoming-events .cta-button {
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  font-size: 1.125rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+}
+
+.upcoming-events .cta-button.primary {
+  background: var(--brand-forest);
+  color: white;
+  border: none;
+}
+
+.upcoming-events .cta-button.primary:hover {
+  background: var(--brand-forest);
+  opacity: 0.9;
+  transform: translateY(-2px);
+}
+
+.upcoming-events .cta-button.secondary {
+  background: transparent;
+  color: var(--brand-forest);
+  border: 2px solid var(--brand-forest);
+}
+
+.upcoming-events .cta-button.secondary:hover {
+  background: var(--brand-forest);
+  color: white;
+  transform: translateY(-2px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .upcoming-events .meeting-schedule-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .upcoming-events .events-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .upcoming-events .guidelines-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .upcoming-events .cta-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .upcoming-events .event-card {
+    margin-bottom: 1rem;
+  }
+}
+
+/* Animation classes */
+.upcoming-events .fade-in {
+  animation: fadeIn 0.6s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.upcoming-events .slide-in-up {
+  animation: slideInUp 0.8s ease-out;
+}
+
+@keyframes slideInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.upcoming-events .stagger-animation > * {
+  animation: fadeIn 0.8s ease-out;
+  animation-fill-mode: both;
+}
+
+.upcoming-events .stagger-animation > *:nth-child(1) { animation-delay: 0.1s; }
+.upcoming-events .stagger-animation > *:nth-child(2) { animation-delay: 0.2s; }
+.upcoming-events .stagger-animation > *:nth-child(3) { animation-delay: 0.3s; }
+.upcoming-events .stagger-animation > *:nth-child(4) { animation-delay: 0.4s; }
+
+.upcoming-events .bounce-in {
+  animation: bounceIn 0.8s ease-out;
+}
+
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
