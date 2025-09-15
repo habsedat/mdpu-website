@@ -1,5 +1,6 @@
 import { PageHero } from "@/components/ui/custom/PageHero";
 import { Section } from "@/components/ui/custom/Section";
+import { LocationSection } from "@/components/ui/custom/LocationSection";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, Target, Heart, Calendar, MapPin, Award, Globe } from "lucide-react";
 import "./about-us.css";
@@ -59,6 +60,9 @@ export default function About() {
           </div>
         </div>
       </Section>
+
+      {/* Our Ancestral Home - Matamba Village */}
+      <LocationSection />
 
       {/* Our Mission & Vision */}
       <Section background="muted">
