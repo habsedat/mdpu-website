@@ -1,4 +1,4 @@
-import DiasporaChapters from "@/pages/diaspora-chapters";
+import DiasporaChapters from "./chapters";
 
 export const metadata = {
   title: "Chapters - MDPU",

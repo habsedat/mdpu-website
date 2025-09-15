@@ -1,4 +1,4 @@
-import OurObjectives from "@/pages/our-objectives";
+import OurObjectives from "./objectives";
 
 export const metadata = {
   title: "Our Objectives - MDPU",

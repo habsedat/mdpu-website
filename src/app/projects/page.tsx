@@ -1,4 +1,4 @@
-import OurProjects from "@/pages/our-projects";
+import OurProjects from "./projects";
 
 export const metadata = {
   title: "Projects - MDPU",

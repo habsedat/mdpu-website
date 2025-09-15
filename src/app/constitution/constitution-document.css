@@ -18,7 +18,7 @@
 
 .constitution-document .constitution-article {
   /* Individual article card styles */
-  border-left: 4px solid var(--brand-forest);
+  border-left: 4px solid var(--brand-primary);
   transition: box-shadow 0.3s ease;
 }
 
@@ -42,13 +42,13 @@
 
 .constitution-document .principle-icon {
   /* Principle icon container styles */
-  background: rgba(20, 83, 45, 0.1);
+  background: rgba(14, 33, 72, 0.1);
   border-radius: 50%;
   transition: background-color 0.3s ease;
 }
 
 .constitution-document .principle-card:hover .principle-icon {
-  background: rgba(20, 83, 45, 0.2);
+  background: rgba(14, 33, 72, 0.2);
 }
 
 .constitution-document .motto-section {
@@ -58,7 +58,7 @@
 
 .constitution-document .motto-quote {
   /* Motto quote styles */
-  color: var(--brand-forest);
+  color: var(--brand-primary);
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -79,7 +79,7 @@
 /* Responsive Design */
 @media (max-width: 768px) {
   .constitution-document .constitution-article {
-    border-left: 3px solid var(--brand-forest);
+    border-left: 3px solid var(--brand-primary);
   }
   
   .constitution-document .motto-quote {
@@ -110,7 +110,7 @@
   
   .constitution-document .constitution-article {
     break-inside: avoid;
-    border-left: 2px solid var(--brand-forest);
+    border-left: 2px solid var(--brand-primary);
   }
   
   .constitution-document .principle-card {

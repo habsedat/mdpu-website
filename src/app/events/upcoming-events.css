@@ -21,11 +21,11 @@
 }
 
 .upcoming-events .general-meeting {
-  border-left: 4px solid var(--brand-forest);
+  border-left: 4px solid var(--brand-primary);
 }
 
 .upcoming-events .executive-meeting {
-  border-left: 4px solid var(--brand-clay);
+  border-left: 4px solid var(--brand-secondary);
 }
 
 .upcoming-events .meeting-icon {
@@ -107,7 +107,7 @@
   width: 1rem;
   height: 1rem;
   margin-right: 0.5rem;
-  color: var(--brand-forest);
+  color: var(--brand-primary);
 }
 
 .upcoming-events .event-type-badge {
@@ -121,22 +121,22 @@
 }
 
 .upcoming-events .event-type-general {
-  background-color: rgba(20, 83, 45, 0.1);
-  color: var(--brand-forest);
+  background-color: rgba(14, 33, 72, 0.1);
+  color: var(--brand-primary);
 }
 
 .upcoming-events .event-type-executive {
-  background-color: rgba(146, 64, 14, 0.1);
-  color: var(--brand-clay);
+  background-color: rgba(72, 58, 160, 0.1);
+  color: var(--brand-secondary);
 }
 
 .upcoming-events .event-type-special {
-  background-color: rgba(217, 119, 6, 0.1);
+  background-color: rgba(227, 208, 149, 0.1);
   color: var(--brand-gold);
 }
 
 .upcoming-events .guidelines-section {
-  background: linear-gradient(135deg, var(--brand-forest) 0%, var(--brand-clay) 100%);
+  background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-secondary) 100%);
   color: white;
 }
 
@@ -212,25 +212,25 @@
 }
 
 .upcoming-events .cta-button.primary {
-  background: var(--brand-forest);
+  background: var(--brand-primary);
   color: white;
   border: none;
 }
 
 .upcoming-events .cta-button.primary:hover {
-  background: var(--brand-forest);
+  background: var(--brand-primary);
   opacity: 0.9;
   transform: translateY(-2px);
 }
 
 .upcoming-events .cta-button.secondary {
   background: transparent;
-  color: var(--brand-forest);
-  border: 2px solid var(--brand-forest);
+  color: var(--brand-primary);
+  border: 2px solid var(--brand-primary);
 }
 
 .upcoming-events .cta-button.secondary:hover {
-  background: var(--brand-forest);
+  background: var(--brand-primary);
   color: white;
   transform: translateY(-2px);
 }

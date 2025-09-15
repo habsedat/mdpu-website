@@ -33,44 +33,6 @@ const membershipBenefits = [
   },
 ];
 
-const membershipTypes = [
-  {
-    title: "Regular Membership",
-    description: "For individuals who want to be part of the MDPU community",
-    features: [
-      "Access to all general meetings",
-      "Participation in community events",
-      "Voting rights in general elections",
-      "Access to member directory",
-      "Newsletter and updates",
-    ],
-    price: "Free",
-  },
-  {
-    title: "Supporting Membership",
-    description: "For members who want to contribute financially to our mission",
-    features: [
-      "All Regular Membership benefits",
-      "Priority access to programs",
-      "Recognition in annual report",
-      "Invitation to exclusive events",
-      "Direct input on project priorities",
-    ],
-    price: "$50/year",
-  },
-  {
-    title: "Lifetime Membership",
-    description: "For committed members who want to make a lasting impact",
-    features: [
-      "All Supporting Membership benefits",
-      "Lifetime membership status",
-      "Special recognition at events",
-      "Legacy project participation",
-      "Board nomination eligibility",
-    ],
-    price: "$500 one-time",
-  },
-];
 
 export default function Membership() {
   return (
@@ -92,7 +54,7 @@ export default function Membership() {
               Discover the benefits of being part of our progressive union
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {membershipBenefits.map((benefit, index) => (
               <Card key={index} className="text-center hover:shadow-lg transition-shadow">
@@ -115,60 +77,75 @@ export default function Membership() {
         </div>
       </Section>
 
-      {/* Membership Types */}
+      {/* Registration Information */}
       <Section background="muted">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-brand-charcoal mb-4">
-              Membership Types
-            </h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">
-              Choose the membership level that best fits your commitment and goals
-            </p>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {membershipTypes.map((type, index) => (
-              <Card key={index} className={`h-full ${index === 1 ? 'border-brand-forest border-2' : ''}`}>
-                <CardHeader className="text-center">
-                  <CardTitle className="text-brand-charcoal">{type.title}</CardTitle>
-                  <CardDescription className="text-gray-600">
-                    {type.description}
-                  </CardDescription>
-                  <div className="text-2xl font-bold text-brand-forest mt-4">
-                    {type.price}
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <ul className="space-y-3">
-                    {type.features.map((feature, featureIndex) => (
-                      <li key={featureIndex} className="flex items-start space-x-3">
-                        <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                        <span className="text-gray-700 text-sm">{feature}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </Section>
-
-      {/* Join Form */}
-      <Section>
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold text-brand-charcoal mb-4">
-              Ready to Join?
+              Register to Become a Member of MDPU
             </h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
-              Fill out the form below to start your membership application. 
-              Our team will review your application and get back to you within 2-3 business days.
+              Before continuing with the registration, please read the information carefully.
             </p>
           </div>
-          
-          <JoinForm />
+
+          <div className="max-w-2xl mx-auto">
+            <Card className="border-brand-primary border-2">
+              <CardHeader className="text-center">
+                <CardTitle className="text-2xl font-bold text-brand-charcoal">Registration</CardTitle>
+                <CardDescription className="text-gray-600 text-lg">
+                  Join the MDPU community and become part of our progressive union
+                </CardDescription>
+                <div className="text-4xl font-bold text-brand-primary mt-6">
+                  $25
+                </div>
+                <p className="text-sm text-gray-500 mt-2">One-time registration fee</p>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <h4 className="font-semibold text-brand-charcoal text-lg">What's Included:</h4>
+                  <ul className="space-y-3">
+                    <li className="flex items-start space-x-3">
+                      <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                      <span className="text-gray-700">Access to all general meetings</span>
+                    </li>
+                    <li className="flex items-start space-x-3">
+                      <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                      <span className="text-gray-700">Participation in community events</span>
+                    </li>
+                    <li className="flex items-start space-x-3">
+                      <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                      <span className="text-gray-700">Voting rights in general elections</span>
+                    </li>
+                    <li className="flex items-start space-x-3">
+                      <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                      <span className="text-gray-700">Access to member directory</span>
+                    </li>
+                    <li className="flex items-start space-x-3">
+                      <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                      <span className="text-gray-700">Newsletter and updates</span>
+                    </li>
+                    <li className="flex items-start space-x-3">
+                      <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                      <span className="text-gray-700">Priority access to programs</span>
+                    </li>
+                    <li className="flex items-start space-x-3">
+                      <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                      <span className="text-gray-700">Recognition in annual report</span>
+                    </li>
+                    <li className="flex items-start space-x-3">
+                      <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                      <span className="text-gray-700">Invitation to exclusive events</span>
+                    </li>
+                    <li className="flex items-start space-x-3">
+                      <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                      <span className="text-gray-700">Direct input on project priorities</span>
+                    </li>
+                  </ul>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </Section>
 
@@ -181,7 +158,7 @@ export default function Membership() {
           <p className="text-gray-600 mb-8 text-lg">
             We're here to help you understand the membership process and answer any questions you might have.
           </p>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <Card>
               <CardHeader>
@@ -189,14 +166,16 @@ export default function Membership() {
               </CardHeader>
               <CardContent>
                 <ul className="text-left space-y-2 text-gray-600">
-                  <li>• Be a descendant of Mathamba</li>
+                  <li>• Be a descendant of Mathamba or his/her two immediate parents (mother and father)</li>
+                  <li>• Or be from his great families (grandmother and grandfather)</li>
+                  <li>• Or have relation origin from the village</li>
                   <li>• Support the organization's mission and values</li>
                   <li>• Commit to active participation in union activities</li>
                   <li>• Agree to abide by the constitution and code of conduct</li>
                 </ul>
               </CardContent>
             </Card>
-            
+
             <Card>
               <CardHeader>
                 <CardTitle className="text-brand-charcoal">Application Process</CardTitle>
@@ -204,13 +183,30 @@ export default function Membership() {
               <CardContent>
                 <ul className="text-left space-y-2 text-gray-600">
                   <li>• Submit your application form</li>
-                  <li>• Review by membership committee (2-3 days)</li>
+                  <li>• Registration fee is $25</li>
                   <li>• Welcome email with member resources</li>
                   <li>• Invitation to next general meeting</li>
                 </ul>
               </CardContent>
             </Card>
           </div>
+        </div>
+      </Section>  
+
+      {/* Join Form */}
+      <Section>
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-brand-charcoal mb-4">
+              Ready to Join?
+            </h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">
+              Fill out the form below to start your membership application.
+              Registration fee is $25.
+            </p>
+          </div>
+
+          <JoinForm />
         </div>
       </Section>
     </>

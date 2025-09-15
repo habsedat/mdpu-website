@@ -1,4 +1,4 @@
-import UpcomingEvents from "@/pages/upcoming-events";
+import UpcomingEvents from "./events";
 
 export const metadata = {
   title: "Events - MDPU",

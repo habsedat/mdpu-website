@@ -31,7 +31,7 @@
 .leadership-team .leadership-avatar {
   width: 4rem;
   height: 4rem;
-  background: linear-gradient(135deg, var(--brand-forest) 0%, var(--brand-gold) 100%);
+  background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-gold) 100%);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -50,7 +50,7 @@
 }
 
 .leadership-team .leadership-position {
-  color: var(--brand-forest);
+  color: var(--brand-primary);
   font-size: 0.875rem;
   font-weight: 500;
   margin-bottom: 0.5rem;
@@ -94,7 +94,7 @@
 }
 
 .leadership-team .contact-item a {
-  color: var(--brand-forest);
+  color: var(--brand-primary);
   text-decoration: none;
   transition: color 0.3s ease;
 }
@@ -104,7 +104,7 @@
 }
 
 .leadership-team .principles-section {
-  background: linear-gradient(135deg, var(--brand-forest) 0%, var(--brand-clay) 100%);
+  background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-secondary) 100%);
   color: white;
 }
 
@@ -140,11 +140,11 @@
 }
 
 .leadership-team .service-icon {
-  background-color: var(--brand-forest);
+  background-color: var(--brand-primary);
 }
 
 .leadership-team .excellence-icon {
-  background-color: var(--brand-clay);
+  background-color: var(--brand-secondary);
 }
 
 .leadership-team .vision-icon {
@@ -152,7 +152,7 @@
 }
 
 .leadership-team .integrity-icon {
-  background-color: var(--brand-forest);
+  background-color: var(--brand-primary);
 }
 
 .leadership-team .principle-title {
@@ -208,7 +208,7 @@
 }
 
 .leadership-team .contact-email a {
-  color: var(--brand-forest);
+  color: var(--brand-primary);
   text-decoration: none;
   transition: color 0.3s ease;
 }
@@ -238,25 +238,25 @@
 }
 
 .leadership-team .cta-button.primary {
-  background: var(--brand-forest);
+  background: var(--brand-primary);
   color: white;
   border: none;
 }
 
 .leadership-team .cta-button.primary:hover {
-  background: var(--brand-forest);
+  background: var(--brand-primary);
   opacity: 0.9;
   transform: translateY(-2px);
 }
 
 .leadership-team .cta-button.secondary {
   background: transparent;
-  color: var(--brand-forest);
-  border: 2px solid var(--brand-forest);
+  color: var(--brand-primary);
+  border: 2px solid var(--brand-primary);
 }
 
 .leadership-team .cta-button.secondary:hover {
-  background: var(--brand-forest);
+  background: var(--brand-primary);
   color: white;
   transform: translateY(-2px);
 }

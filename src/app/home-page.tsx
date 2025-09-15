@@ -7,8 +7,8 @@ import { EventCard } from "@/components/ui/custom/EventCard";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Users, Target, Heart, MapPin, ArrowRight, CheckCircle } from "lucide-react";
-import Link from "next/link";
 import "./home-page.css";
+import Link from "next/link";
 
 // Sample data - in a real app, this would come from a CMS or API
 const featuredProjects = [
@@ -127,7 +127,7 @@ export default function HomePage() {
         </div>
         
         <div className="text-center">
-          <Button asChild size="lg" variant="outline" className="border-brand-forest text-brand-forest hover:bg-brand-forest hover:text-white">
+          <Button asChild size="lg" variant="outline" className="border-brand-primary text-brand-primary hover:bg-brand-primary hover:text-white">
             <Link href="/projects">
               View All Projects
               <ArrowRight className="w-4 h-4 ml-2" />
@@ -169,7 +169,7 @@ export default function HomePage() {
               <Card key={index} className="border-l-4 border-l-brand-forest">
                 <CardContent className="pt-6">
                   <div className="flex items-start space-x-3">
-                    <div className="w-6 h-6 bg-brand-forest rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <div className="w-6 h-6 bg-brand-primary rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
                       <CheckCircle className="w-4 h-4 text-white" />
                     </div>
                     <p className="text-gray-700 leading-relaxed">
@@ -182,7 +182,7 @@ export default function HomePage() {
           </div>
           
           <div className="text-center mt-12">
-            <Button asChild size="lg" variant="outline" className="border-brand-forest text-brand-forest hover:bg-brand-forest hover:text-white">
+            <Button asChild size="lg" variant="outline" className="border-brand-primary text-brand-primary hover:bg-brand-primary hover:text-white">
               <Link href="/objectives">
                 Read Our Full Constitution
                 <ArrowRight className="w-4 h-4 ml-2" />

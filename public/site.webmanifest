@@ -1,0 +1,23 @@
+{
+  "name": "MDPU - Mathamba Descendants Progressive Union",
+  "short_name": "MDPU",
+  "description": "The official website of the Mathamba Descendants Progressive Union, fostering unity, development, and community engagement among descendants of Mathamba.",
+  "icons": [
+    {
+      "src": "/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "theme_color": "#2d5016",
+  "background_color": "#ffffff",
+  "display": "standalone",
+  "start_url": "/",
+  "scope": "/"
+}
+

@@ -9,40 +9,22 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Users, Send, CheckCircle } from "lucide-react";
 
 const joinFormSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Please enter a valid email address"),
   phone: z.string().min(10, "Please enter a valid phone number"),
-  chapter: z.string().min(1, "Please select a chapter"),
-  country: z.string().min(1, "Please select a country"),
+  fatherName: z.string().min(2, "Father's name must be at least 2 characters"),
+  motherName: z.string().min(2, "Mother's name must be at least 2 characters"),
+  country: z.string().min(1, "Please enter your country"),
+  city: z.string().min(1, "Please enter your city"),
   message: z.string().optional(),
 });
 
 type JoinFormData = z.infer<typeof joinFormSchema>;
 
-const chapters = [
-  "Freetown",
-  "London",
-  "New York",
-  "Toronto",
-  "Atlanta",
-  "Washington DC",
-  "Other",
-];
-
-const countries = [
-  "Sierra Leone",
-  "United Kingdom",
-  "United States",
-  "Canada",
-  "Germany",
-  "Netherlands",
-  "Australia",
-  "Other",
-];
+// Removed chapters and countries arrays as we're using text inputs now
 
 export function JoinForm() {
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -53,8 +35,10 @@ export function JoinForm() {
       name: "",
       email: "",
       phone: "",
-      chapter: "",
+      fatherName: "",
+      motherName: "",
       country: "",
+      city: "",
       message: "",
     },
   });
@@ -104,14 +88,14 @@ export function JoinForm() {
   return (
     <Card className="max-w-2xl mx-auto">
       <CardHeader className="text-center">
-        <div className="w-12 h-12 bg-brand-forest rounded-full flex items-center justify-center mx-auto mb-4">
+        <div className="w-12 h-12 bg-brand-primary rounded-full flex items-center justify-center mx-auto mb-4">
           <Users className="w-6 h-6 text-white" />
         </div>
         <CardTitle className="text-2xl font-bold text-brand-charcoal">
-          Join the MDPU Family
+          Register for MDPU Membership
         </CardTitle>
         <CardDescription>
-          Become part of our progressive union and help build a stronger community together.
+          Become part of our progressive union and help build a stronger community together. Registration fee: $25
         </CardDescription>
       </CardHeader>
       
@@ -165,24 +149,43 @@ export function JoinForm() {
               
               <FormField
                 control={form.control}
+                name="fatherName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Father's Full Name *</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter your father's full name" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <FormField
+                control={form.control}
+                name="motherName"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Mother's Full Name *</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Enter your mother's full name" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              
+              <FormField
+                control={form.control}
                 name="country"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Country *</FormLabel>
-                    <Select onValueChange={field.onChange} defaultValue={field.value}>
-                      <FormControl>
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select your country" />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {countries.map((country) => (
-                          <SelectItem key={country} value={country}>
-                            {country}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                    <FormControl>
+                      <Input placeholder="Enter your country" {...field} />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -191,28 +194,18 @@ export function JoinForm() {
             
             <FormField
               control={form.control}
-              name="chapter"
+              name="city"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Preferred Chapter *</FormLabel>
-                  <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select your preferred chapter" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {chapters.map((chapter) => (
-                        <SelectItem key={chapter} value={chapter}>
-                          {chapter}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <FormLabel>City *</FormLabel>
+                  <FormControl>
+                    <Input placeholder="Enter your city" {...field} />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
+            
             
             <FormField
               control={form.control}
@@ -234,7 +227,7 @@ export function JoinForm() {
             
             <Button 
               type="submit" 
-              className="w-full bg-brand-forest hover:bg-brand-forest/90"
+              className="w-full bg-brand-primary hover:bg-brand-primary/90 text-white"
               disabled={form.formState.isSubmitting}
             >
               {form.formState.isSubmitting ? (
@@ -242,7 +235,7 @@ export function JoinForm() {
               ) : (
                 <>
                   <Send className="w-4 h-4 mr-2" />
-                  Submit Application
+                  Submit Registration ($25)
                 </>
               )}
             </Button>

@@ -1,4 +1,4 @@
-import MakeDonation from "@/pages/make-donation";
+import MakeDonation from "./donate";
 
 export const metadata = {
   title: "Donate - Support MDPU",

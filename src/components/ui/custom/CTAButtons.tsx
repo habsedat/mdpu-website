@@ -43,3 +43,4 @@ export function CTAButtons({ variant = "default", className }: CTAButtonsProps) 
     </div>
   );
 }
+

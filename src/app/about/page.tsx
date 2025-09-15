@@ -1,4 +1,4 @@
-import AboutUs from "@/pages/about-us";
+import AboutUs from "./about";
 
 export const metadata = {
   title: "About Us - MDPU",

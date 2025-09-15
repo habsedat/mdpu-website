@@ -120,7 +120,7 @@
 }
 
 .diaspora-chapters .contact-link {
-  color: var(--brand-forest);
+  color: var(--brand-primary);
   text-decoration: none;
   transition: color 0.3s ease;
 }
@@ -174,7 +174,7 @@
 .diaspora-chapters .application-icon {
   width: 3rem;
   height: 3rem;
-  background-color: var(--brand-forest);
+  background-color: var(--brand-primary);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -227,8 +227,8 @@
 
 .diaspora-chapters .form-input:focus {
   outline: none;
-  border-color: var(--brand-forest);
-  box-shadow: 0 0 0 3px rgba(20, 83, 45, 0.1);
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 0 3px rgba(14, 33, 72, 0.1);
 }
 
 .diaspora-chapters .form-textarea {
@@ -244,8 +244,8 @@
 
 .diaspora-chapters .form-textarea:focus {
   outline: none;
-  border-color: var(--brand-forest);
-  box-shadow: 0 0 0 3px rgba(20, 83, 45, 0.1);
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 0 3px rgba(14, 33, 72, 0.1);
 }
 
 .diaspora-chapters .form-select {
@@ -260,13 +260,13 @@
 
 .diaspora-chapters .form-select:focus {
   outline: none;
-  border-color: var(--brand-forest);
-  box-shadow: 0 0 0 3px rgba(20, 83, 45, 0.1);
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 0 3px rgba(14, 33, 72, 0.1);
 }
 
 .diaspora-chapters .submit-button {
   width: 100%;
-  background: var(--brand-forest);
+  background: var(--brand-primary);
   color: white;
   padding: 0.875rem 1.5rem;
   border: none;
@@ -282,7 +282,7 @@
 }
 
 .diaspora-chapters .submit-button:hover {
-  background: var(--brand-forest);
+  background: var(--brand-primary);
   opacity: 0.9;
   transform: translateY(-2px);
 }
@@ -327,23 +327,23 @@
 }
 
 .diaspora-chapters .community-icon {
-  background-color: rgba(20, 83, 45, 0.1);
-  color: var(--brand-forest);
+  background-color: rgba(14, 33, 72, 0.1);
+  color: var(--brand-primary);
 }
 
 .diaspora-chapters .activities-icon {
-  background-color: rgba(146, 64, 14, 0.1);
-  color: var(--brand-clay);
+  background-color: rgba(72, 58, 160, 0.1);
+  color: var(--brand-secondary);
 }
 
 .diaspora-chapters .network-icon {
-  background-color: rgba(217, 119, 6, 0.1);
+  background-color: rgba(227, 208, 149, 0.1);
   color: var(--brand-gold);
 }
 
 .diaspora-chapters .impact-icon {
-  background-color: rgba(20, 83, 45, 0.1);
-  color: var(--brand-forest);
+  background-color: rgba(14, 33, 72, 0.1);
+  color: var(--brand-primary);
 }
 
 .diaspora-chapters .benefit-title {

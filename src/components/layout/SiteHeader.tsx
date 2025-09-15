@@ -25,12 +25,12 @@ export function SiteHeader() {
           {/* Logo */}
           <div className="flex items-center">
             <Link href="/" className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-brand-forest rounded-full flex items-center justify-center">
-                <Users className="w-5 h-5 text-white" />
-              </div>
-              <span className="text-xl font-bold text-brand-charcoal">
-                MDPU
-              </span>
+              <img 
+                src="/mdpu logo.png" 
+                alt="MDPU - Mathamba Descendants Progressive Union" 
+                className="h-10 w-auto"
+              />
+              <span className="text-xl font-bold text-gray-800">MDPU</span>
             </Link>
           </div>
 
@@ -115,3 +115,4 @@ export function SiteHeader() {
     </header>
   );
 }
+

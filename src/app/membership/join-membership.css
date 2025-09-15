@@ -1,6 +1,8 @@
 /* Join Membership Page Styles */
 .join-membership {
   /* Main container styles */
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--brand-sand) 0%, #ffffff 100%);
 }
 
 .join-membership .benefits-grid {
@@ -24,18 +26,18 @@
 .join-membership .benefit-icon {
   width: 3rem;
   height: 3rem;
-  background-color: rgba(20, 83, 45, 0.1);
+  background-color: rgba(14, 33, 72, 0.1);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto 1rem;
-  color: var(--brand-forest);
+  color: var(--brand-primary);
   transition: all 0.3s ease;
 }
 
 .join-membership .benefit-card:hover .benefit-icon {
-  background-color: var(--brand-forest);
+  background-color: var(--brand-primary);
   color: white;
   transform: scale(1.1);
 }
@@ -54,7 +56,7 @@
 }
 
 .join-membership .membership-card.featured {
-  border: 2px solid var(--brand-forest);
+  border: 2px solid var(--brand-primary);
   transform: scale(1.05);
 }
 
@@ -70,7 +72,7 @@
 .join-membership .membership-price {
   font-size: 1.5rem;
   font-weight: 700;
-  color: var(--brand-forest);
+  color: var(--brand-primary);
   margin-top: 1rem;
 }
 
@@ -104,7 +106,7 @@
 }
 
 .join-membership .info-section {
-  background: linear-gradient(135deg, var(--brand-forest) 0%, var(--brand-clay) 100%);
+  background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-secondary) 100%);
   color: white;
 }
 

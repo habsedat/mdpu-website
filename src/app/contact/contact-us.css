@@ -1,6 +1,8 @@
 /* Contact Us Page Styles */
 .contact-us {
   /* Main container styles */
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--brand-sand) 0%, #ffffff 100%);
 }
 
 .contact-us .contact-form {
@@ -38,8 +40,8 @@
 
 .contact-us .form-input:focus {
   outline: none;
-  border-color: var(--brand-forest);
-  box-shadow: 0 0 0 3px rgba(20, 83, 45, 0.1);
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 0 3px rgba(14, 33, 72, 0.1);
 }
 
 .contact-us .form-textarea {
@@ -55,8 +57,8 @@
 
 .contact-us .form-textarea:focus {
   outline: none;
-  border-color: var(--brand-forest);
-  box-shadow: 0 0 0 3px rgba(20, 83, 45, 0.1);
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 0 3px rgba(14, 33, 72, 0.1);
 }
 
 .contact-us .form-select {
@@ -71,13 +73,13 @@
 
 .contact-us .form-select:focus {
   outline: none;
-  border-color: var(--brand-forest);
-  box-shadow: 0 0 0 3px rgba(20, 83, 45, 0.1);
+  border-color: var(--brand-primary);
+  box-shadow: 0 0 0 3px rgba(14, 33, 72, 0.1);
 }
 
 .contact-us .submit-button {
   width: 100%;
-  background: var(--brand-forest);
+  background: var(--brand-primary);
   color: white;
   padding: 0.875rem 1.5rem;
   border: none;
@@ -93,7 +95,7 @@
 }
 
 .contact-us .submit-button:hover {
-  background: var(--brand-forest);
+  background: var(--brand-primary);
   opacity: 0.9;
   transform: translateY(-2px);
 }
@@ -127,7 +129,7 @@
 .contact-us .contact-icon {
   width: 2.5rem;
   height: 2.5rem;
-  background: var(--brand-forest);
+  background: var(--brand-primary);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -149,7 +151,7 @@
 }
 
 .contact-us .contact-details a {
-  color: var(--brand-forest);
+  color: var(--brand-primary);
   text-decoration: none;
   transition: color 0.3s ease;
 }
@@ -207,7 +209,7 @@
 
 .contact-us .meeting-list li::before {
   content: "•";
-  color: var(--brand-forest);
+  color: var(--brand-primary);
   font-weight: bold;
   position: absolute;
   left: 0;

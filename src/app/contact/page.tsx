@@ -1,4 +1,4 @@
-import ContactUs from "@/pages/contact-us";
+import ContactUs from "./contact";
 
 export const metadata = {
   title: "Contact Us - MDPU",

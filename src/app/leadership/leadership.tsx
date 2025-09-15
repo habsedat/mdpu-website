@@ -15,38 +15,47 @@ export const metadata = {
 // Sample leadership data - in a real app, this would come from a CMS or API
 const executiveCommittee = [
   {
-    name: "Dr. Aminata Kamara",
+    name: "Henry Bangura",
     position: "President",
     email: "president@mdpu.org",
-    phone: "+232 123 456 789",
-    location: "Freetown, Sierra Leone",
-    term: "2023-2025",
-    bio: "Dr. Kamara brings over 15 years of experience in community development and has been instrumental in establishing MDPU's educational programs.",
+    phone: "+96550389325 ",
+    location: "Kuwait",
+    term: "2023-2026",
+    bio: "Henry Bangura brings over 15 years of experience in community development and has been instrumental in establishing MDPU's educational programs.",
   },
   {
     name: "Mohamed Sesay",
     position: "Vice President",
     email: "vicepresident@mdpu.org",
-    phone: "+232 123 456 790",
-    location: "London, UK",
-    term: "2023-2025",
+    phone: "+232 ",
+    location: "Freetown, Sierra Leone",
+    term: "2023-2026",
     bio: "Mohamed oversees our international operations and has successfully established chapters in the UK and Europe.",
   },
   {
-    name: "Fatmata Bangura",
+    name: "Henry Koroma",
     position: "Secretary General",
     email: "secretary@mdpu.org",
-    phone: "+232 123 456 791",
+    phone: "+23277371080",
     location: "Freetown, Sierra Leone",
-    term: "2023-2025",
-    bio: "Fatmata manages our administrative operations and ensures smooth communication between all chapters and members.",
+    term: "2023-2026",
+    bio: "Henry Koroma manages our administrative operations and ensures smooth communication between all chapters and members.",
+  },
+  {
+    name: "Mariatu Kabia",
+    position: "DP Secretary General",
+    email: "secretary@mdpu.org",
+    phone: "+23276201943",
+    location: "Freetown, Sierra Leone",
+    term: "2023-2026",
+    bio: "Mariatu Kabia manages our administrative operations and ensures smooth communication between all chapters and members.",
   },
   {
     name: "Ibrahim Conteh",
     position: "Treasurer",
     email: "treasurer@mdpu.org",
-    phone: "+232 123 456 792",
-    location: "New York, USA",
+    phone: "+232 ",
+    location: "Freetown, Sierra Leone",
     term: "2023-2025",
     bio: "Ibrahim brings financial expertise from his career in banking and ensures transparent financial management of our organization.",
   },
@@ -57,7 +66,7 @@ const boardMembers = [
     name: "Dr. Isatu Fofanah",
     position: "Board Member - Education",
     email: "education@mdpu.org",
-    location: "Toronto, Canada",
+    location: "Freetown, Sierra Leone",
     term: "2023-2026",
     bio: "Dr. Fofanah leads our educational initiatives and scholarship programs, bringing expertise from her career in academia.",
   },
@@ -73,7 +82,7 @@ const boardMembers = [
     name: "Mariama Koroma",
     position: "Board Member - Youth Development",
     email: "youth@mdpu.org",
-    location: "Atlanta, USA",
+    location: "Freetown, Sierra Leone",
     term: "2023-2026",
     bio: "Mariama focuses on empowering young members and creating opportunities for the next generation of leaders.",
   },
@@ -81,7 +90,7 @@ const boardMembers = [
     name: "Dr. Mohamed Jalloh",
     position: "Board Member - Healthcare",
     email: "healthcare@mdpu.org",
-    location: "Washington DC, USA",
+    location: "Freetown, Sierra Leone",
     term: "2023-2026",
     bio: "Dr. Jalloh oversees our healthcare initiatives and community health programs across all chapters.",
   },
@@ -89,7 +98,7 @@ const boardMembers = [
 
 const chapterLeaders = [
   {
-    name: "Sarah Williams",
+    name: "Sarah ",
     position: "Chapter President - London",
     email: "london@mdpu.org",
     location: "London, UK",
@@ -97,7 +106,7 @@ const chapterLeaders = [
     bio: "Sarah leads our largest international chapter and has been instrumental in organizing successful community events.",
   },
   {
-    name: "David Thompson",
+    name: "David ",
     position: "Chapter President - New York",
     email: "newyork@mdpu.org",
     location: "New York, USA",
@@ -105,7 +114,7 @@ const chapterLeaders = [
     bio: "David coordinates activities for our East Coast members and manages partnerships with local organizations.",
   },
   {
-    name: "Aisha Johnson",
+    name: "Johnson",
     position: "Chapter President - Toronto",
     email: "toronto@mdpu.org",
     location: "Toronto, Canada",
@@ -134,7 +143,7 @@ export default function Leadership() {
               The executive leadership team responsible for the day-to-day operations and strategic direction of MDPU
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {executiveCommittee.map((leader, index) => (
               <LeadershipRoleCard key={index} {...leader} />
@@ -154,7 +163,7 @@ export default function Leadership() {
               Our board members provide strategic oversight and expertise in key areas of our organization
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {boardMembers.map((member, index) => (
               <LeadershipRoleCard key={index} {...member} />
@@ -174,7 +183,7 @@ export default function Leadership() {
               Leaders of our international chapters who coordinate local activities and represent their communities
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {chapterLeaders.map((leader, index) => (
               <LeadershipRoleCard key={index} {...leader} />
@@ -194,7 +203,7 @@ export default function Leadership() {
               The values and principles that guide our leaders in serving the MDPU community
             </p>
           </div>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <div className="text-center">
               <div className="w-12 h-12 bg-brand-forest rounded-full flex items-center justify-center mx-auto mb-4">
@@ -205,7 +214,7 @@ export default function Leadership() {
                 We lead by serving our community with humility and dedication
               </p>
             </div>
-            
+
             <div className="text-center">
               <div className="w-12 h-12 bg-brand-clay rounded-full flex items-center justify-center mx-auto mb-4">
                 <Award className="w-6 h-6 text-white" />
@@ -215,7 +224,7 @@ export default function Leadership() {
                 We strive for the highest standards in all our endeavors
               </p>
             </div>
-            
+
             <div className="text-center">
               <div className="w-12 h-12 bg-brand-gold rounded-full flex items-center justify-center mx-auto mb-4">
                 <Target className="w-6 h-6 text-brand-charcoal" />
@@ -225,7 +234,7 @@ export default function Leadership() {
                 We lead with a clear vision for the future of our community
               </p>
             </div>
-            
+
             <div className="text-center">
               <div className="w-12 h-12 bg-brand-forest rounded-full flex items-center justify-center mx-auto mb-4">
                 <Heart className="w-6 h-6 text-white" />
@@ -248,7 +257,7 @@ export default function Leadership() {
           <p className="text-gray-600 mb-8 text-lg">
             Our leaders are accessible and committed to hearing from members. Reach out to them with questions, suggestions, or concerns.
           </p>
-          
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
             <Card>
               <CardHeader>
@@ -263,7 +272,7 @@ export default function Leadership() {
                 </div>
               </CardContent>
             </Card>
-            
+
             <Card>
               <CardHeader>
                 <CardTitle className="text-brand-charcoal">Executive Committee</CardTitle>
@@ -277,7 +286,7 @@ export default function Leadership() {
                 </div>
               </CardContent>
             </Card>
-            
+
             <Card>
               <CardHeader>
                 <CardTitle className="text-brand-charcoal">Board of Directors</CardTitle>
@@ -292,7 +301,7 @@ export default function Leadership() {
               </CardContent>
             </Card>
           </div>
-          
+
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button size="lg" asChild className="bg-brand-forest hover:bg-brand-forest/90">
               <Link href="/contact">

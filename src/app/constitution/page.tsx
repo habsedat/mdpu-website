@@ -1,4 +1,4 @@
-import ConstitutionDocument from "@/pages/constitution-document";
+import ConstitutionDocument from "./constitution";
 
 export const metadata = {
   title: "Constitution - MDPU",

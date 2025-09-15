@@ -8,11 +8,12 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Organization Info */}
           <div className="space-y-4">
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-brand-gold rounded-full flex items-center justify-center">
-                <Users className="w-5 h-5 text-brand-charcoal" />
-              </div>
-              <span className="text-xl font-bold">MDPU</span>
+            <div className="flex items-center">
+              <img 
+                src="/mdpu logo.png" 
+                alt="MDPU - Mathamba Descendants Progressive Union" 
+                className="h-8 w-auto"
+              />
             </div>
             <p className="text-gray-300 text-sm leading-relaxed">
               Mathamba Descendants Progressive Union - Building stronger communities through togetherness and unity.
@@ -144,3 +145,4 @@ export function Footer() {
     </footer>
   );
 }
+

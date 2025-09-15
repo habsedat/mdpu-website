@@ -39,8 +39,9 @@
   --color-card: var(--card);
   
   /* MDPU Brand Colors */
-  --color-brand-forest: var(--brand-forest);
-  --color-brand-clay: var(--brand-clay);
+  --color-brand-primary: var(--brand-primary);
+  --color-brand-secondary: var(--brand-secondary);
+  --color-brand-accent: var(--brand-accent);
   --color-brand-gold: var(--brand-gold);
   --color-brand-charcoal: var(--brand-charcoal);
   --color-brand-sand: var(--brand-sand);
@@ -54,78 +55,79 @@
 :root {
   --radius: 0.625rem;
   
-  /* MDPU Brand Colors - Palette B */
-  --brand-forest: #14532D;      /* Primary */
-  --brand-clay: #92400E;        /* Secondary */
-  --brand-gold: #D97706;        /* CTA/Accent */
-  --brand-charcoal: #111827;    /* Text/Headings */
-  --brand-sand: #F3F4F6;        /* Background */
+  /* MDPU Brand Colors - Professional RGB System */
+  --brand-primary: rgb(14, 33, 72);     /* Dark Blue */
+  --brand-secondary: rgb(72, 58, 160);   /* Purple */
+  --brand-accent: rgb(121, 101, 193);      /* Light Purple */
+  --brand-gold: rgb(227, 208, 149);        /* Gold */
+  --brand-charcoal: rgb(45, 55, 72);    /* Text/Headings */
+  --brand-sand: rgb(247, 250, 252);        /* Background */
   
-  /* Semantic color mappings */
+  /* Professional Semantic Color Mappings */
   --background: var(--brand-sand);
   --foreground: var(--brand-charcoal);
-  --card: oklch(1 0 0);
+  --card: rgb(255, 255, 255);
   --card-foreground: var(--brand-charcoal);
-  --popover: oklch(1 0 0);
+  --popover: rgb(255, 255, 255);
   --popover-foreground: var(--brand-charcoal);
-  --primary: var(--brand-forest);
-  --primary-foreground: oklch(0.985 0.001 106.423);
-  --secondary: var(--brand-clay);
-  --secondary-foreground: oklch(0.985 0.001 106.423);
-  --muted: oklch(0.97 0.001 106.424);
-  --muted-foreground: oklch(0.553 0.013 58.071);
+  --primary: var(--brand-primary);
+  --primary-foreground: rgb(255, 255, 255);
+  --secondary: var(--brand-secondary);
+  --secondary-foreground: rgb(255, 255, 255);
+  --muted: rgb(248, 250, 252);
+  --muted-foreground: rgb(100, 116, 139);
   --accent: var(--brand-gold);
-  --accent-foreground: oklch(0.985 0.001 106.423);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.923 0.003 48.717);
-  --input: oklch(0.923 0.003 48.717);
-  --ring: var(--brand-forest);
-  --chart-1: var(--brand-forest);
-  --chart-2: var(--brand-clay);
-  --chart-3: var(--brand-gold);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.985 0.001 106.423);
+  --accent-foreground: var(--brand-charcoal);
+  --destructive: rgb(239, 68, 68);
+  --border: rgb(226, 232, 240);
+  --input: rgb(226, 232, 240);
+  --ring: var(--brand-primary);
+  --chart-1: var(--brand-primary);
+  --chart-2: var(--brand-secondary);
+  --chart-3: var(--brand-accent);
+  --chart-4: var(--brand-gold);
+  --chart-5: rgb(148, 163, 184);
+  --sidebar: rgb(255, 255, 255);
   --sidebar-foreground: var(--brand-charcoal);
-  --sidebar-primary: var(--brand-forest);
-  --sidebar-primary-foreground: oklch(0.985 0.001 106.423);
-  --sidebar-accent: oklch(0.97 0.001 106.424);
+  --sidebar-primary: var(--brand-primary);
+  --sidebar-primary-foreground: rgb(255, 255, 255);
+  --sidebar-accent: rgb(248, 250, 252);
   --sidebar-accent-foreground: var(--brand-charcoal);
-  --sidebar-border: oklch(0.923 0.003 48.717);
-  --sidebar-ring: var(--brand-forest);
+  --sidebar-border: rgb(226, 232, 240);
+  --sidebar-ring: var(--brand-primary);
 }
 
 .dark {
   --background: var(--brand-charcoal);
   --foreground: var(--brand-sand);
-  --card: oklch(0.216 0.006 56.043);
+  --card: rgb(30, 41, 59);
   --card-foreground: var(--brand-sand);
-  --popover: oklch(0.216 0.006 56.043);
+  --popover: rgb(30, 41, 59);
   --popover-foreground: var(--brand-sand);
   --primary: var(--brand-gold);
   --primary-foreground: var(--brand-charcoal);
-  --secondary: var(--brand-clay);
+  --secondary: var(--brand-secondary);
   --secondary-foreground: var(--brand-sand);
-  --muted: oklch(0.268 0.007 34.298);
-  --muted-foreground: oklch(0.709 0.01 56.259);
-  --accent: var(--brand-forest);
+  --muted: rgb(51, 65, 85);
+  --muted-foreground: rgb(148, 163, 184);
+  --accent: var(--brand-primary);
   --accent-foreground: var(--brand-sand);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
+  --destructive: rgb(248, 113, 113);
+  --border: rgba(255, 255, 255, 0.1);
+  --input: rgba(255, 255, 255, 0.15);
   --ring: var(--brand-gold);
-  --chart-1: var(--brand-forest);
-  --chart-2: var(--brand-clay);
-  --chart-3: var(--brand-gold);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.216 0.006 56.043);
+  --chart-1: var(--brand-primary);
+  --chart-2: var(--brand-secondary);
+  --chart-3: var(--brand-accent);
+  --chart-4: var(--brand-gold);
+  --chart-5: rgb(148, 163, 184);
+  --sidebar: rgb(30, 41, 59);
   --sidebar-foreground: var(--brand-sand);
   --sidebar-primary: var(--brand-gold);
   --sidebar-primary-foreground: var(--brand-charcoal);
-  --sidebar-accent: oklch(0.268 0.007 34.298);
+  --sidebar-accent: rgb(51, 65, 85);
   --sidebar-accent-foreground: var(--brand-sand);
-  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-border: rgba(255, 255, 255, 0.1);
   --sidebar-ring: var(--brand-gold);
 }
 
