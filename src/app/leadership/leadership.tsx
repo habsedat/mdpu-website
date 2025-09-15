@@ -17,6 +17,7 @@ const executiveCommittee = [
   {
     name: "Henry Bangura",
     position: "President",
+    image: "/assets/leadership/henry-bangura.jpg",
     email: "president@mdpu.org",
     phone: "+96550389325 ",
     location: "Kuwait",
@@ -26,6 +27,7 @@ const executiveCommittee = [
   {
     name: "Mohamed Sesay",
     position: "Vice President",
+    image: "/assets/leadership/mohamed-sesay.jpg",
     email: "vicepresident@mdpu.org",
     phone: "+232 ",
     location: "Freetown, Sierra Leone",
@@ -35,6 +37,7 @@ const executiveCommittee = [
   {
     name: "Henry Koroma",
     position: "Secretary General",
+    image: "/assets/leadership/henry-koroma.jpg",
     email: "secretary@mdpu.org",
     phone: "+23277371080",
     location: "Freetown, Sierra Leone",
@@ -44,6 +47,7 @@ const executiveCommittee = [
   {
     name: "Mariatu Kabia",
     position: "DP Secretary General",
+    image: "/assets/leadership/mariatu-kabia.jpg",
     email: "secretary@mdpu.org",
     phone: "+23276201943",
     location: "Freetown, Sierra Leone",
@@ -53,6 +57,7 @@ const executiveCommittee = [
   {
     name: "Ibrahim Conteh",
     position: "Treasurer",
+    image: "/assets/leadership/ibrahim-conteh.jpg",
     email: "treasurer@mdpu.org",
     phone: "+232 ",
     location: "Freetown, Sierra Leone",
@@ -65,6 +70,7 @@ const boardMembers = [
   {
     name: "Dr. Isatu Fofanah",
     position: "Board Member - Education",
+    image: "/assets/leadership/isatu-fofanah.jpg",
     email: "education@mdpu.org",
     location: "Freetown, Sierra Leone",
     term: "2023-2026",
@@ -73,6 +79,7 @@ const boardMembers = [
   {
     name: "Alhaji Sorie Kamara",
     position: "Board Member - Cultural Affairs",
+    image: "/assets/leadership/sorie-kamara.jpg",
     email: "cultural@mdpu.org",
     location: "Freetown, Sierra Leone",
     term: "2023-2026",
@@ -81,6 +88,7 @@ const boardMembers = [
   {
     name: "Mariama Koroma",
     position: "Board Member - Youth Development",
+    image: "/assets/leadership/mariama-koroma.jpg",
     email: "youth@mdpu.org",
     location: "Freetown, Sierra Leone",
     term: "2023-2026",
@@ -89,6 +97,7 @@ const boardMembers = [
   {
     name: "Dr. Mohamed Jalloh",
     position: "Board Member - Healthcare",
+    image: "/assets/leadership/mohamed-jalloh.jpg",
     email: "healthcare@mdpu.org",
     location: "Freetown, Sierra Leone",
     term: "2023-2026",
@@ -100,6 +109,7 @@ const chapterLeaders = [
   {
     name: "Sarah ",
     position: "Chapter President - London",
+    image: "/assets/leadership/sarah-london.jpg",
     email: "london@mdpu.org",
     location: "London, UK",
     term: "2024-2026",
@@ -108,6 +118,7 @@ const chapterLeaders = [
   {
     name: "David ",
     position: "Chapter President - New York",
+    image: "/assets/leadership/david-newyork.jpg",
     email: "newyork@mdpu.org",
     location: "New York, USA",
     term: "2024-2026",
@@ -116,6 +127,7 @@ const chapterLeaders = [
   {
     name: "Johnson",
     position: "Chapter President - Toronto",
+    image: "/assets/leadership/johnson-toronto.jpg",
     email: "toronto@mdpu.org",
     location: "Toronto, Canada",
     term: "2024-2026",
