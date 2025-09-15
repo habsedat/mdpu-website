@@ -19,7 +19,7 @@ export function LocationSection() {
   };
 
   return (
-    <section className="py-16 bg-gradient-to-br from-brand-sand to-white">
+    <section id="location" className="py-16 bg-gradient-to-br from-brand-sand to-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
         <div className={`text-center mb-12 transition-all duration-1000 ${isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`}>
@@ -40,16 +40,6 @@ export function LocationSection() {
             <Card className="overflow-hidden shadow-2xl border-0 bg-white">
               <CardContent className="p-0">
                 <div className="relative">
-                  {/* Map Loading Overlay */}
-                  {!mapLoaded && (
-                    <div className="absolute inset-0 bg-gradient-to-br from-brand-forest to-brand-clay flex items-center justify-center z-10">
-                      <div className="text-center text-white">
-                        <div className="animate-spin w-8 h-8 border-4 border-white border-t-transparent rounded-full mx-auto mb-4"></div>
-                        <p className="text-lg font-semibold">Loading Matamba...</p>
-                      </div>
-                    </div>
-                  )}
-                  
                   {/* Google Map Embed */}
                   <iframe
                     src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.123456789!2d-11.5043432!3d8.7619929!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xf06db6efd961b1d%3A0x95a3833503c1f871!2sMatamba%2C%20Sierra%20Leone!5e0!3m2!1sen!2sus!4v1699123456789!5m2!1sen!2sus"
@@ -61,7 +51,18 @@ export function LocationSection() {
                     referrerPolicy="no-referrer-when-downgrade"
                     onLoad={handleMapLoad}
                     className="transition-all duration-500"
+                    title="Matamba Village Location"
                   />
+                  
+                  {/* Loading Overlay */}
+                  {!mapLoaded && (
+                    <div className="absolute inset-0 bg-gradient-to-br from-brand-forest to-brand-clay flex items-center justify-center z-10">
+                      <div className="text-center text-white">
+                        <div className="animate-spin w-8 h-8 border-4 border-white border-t-transparent rounded-full mx-auto mb-4"></div>
+                        <p className="text-lg font-semibold">Loading Matamba...</p>
+                      </div>
+                    </div>
+                  )}
                   
                   {/* Map Overlay Info */}
                   <div className="absolute top-4 left-4 bg-white/95 backdrop-blur-sm rounded-lg p-3 shadow-lg">
