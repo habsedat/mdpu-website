@@ -72,3 +72,9 @@ Use descriptive, lowercase names with hyphens:
 - Ensure good contrast for text overlays
 - Consider colorblind users when choosing images
 
+
+
+
+
+
+

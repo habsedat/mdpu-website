@@ -1,11 +1,19 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Static export for Firebase Hosting
-  output: 'export',
+  // Enable server-side functionality for Firebase Functions
+  // output: 'export', // Removed for server-side functionality
   trailingSlash: true,
   images: {
-    unoptimized: true,
+    domains: ['firebasestorage.googleapis.com'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'firebasestorage.googleapis.com',
+        port: '',
+        pathname: '/**',
+      },
+    ],
   },
   
   // Performance optimizations
@@ -15,6 +23,11 @@ const nextConfig: NextConfig = {
   
   // Compression
   compress: true,
+  
+  // Skip API routes during build for now
+  generateBuildId: async () => {
+    return 'mdpu-build-' + Date.now();
+  },
 };
 
 export default nextConfig;

@@ -15,21 +15,17 @@ export const metadata = {
 // Sample leadership data - in a real app, this would come from a CMS or API
 const executiveCommittee = [
   {
-    name: "Henry Bangura",
-    position: "President",
-    image: "/assets/leadership/henry-bangura.jpg",
-    email: "president@mdpu.org",
-    phone: "+96550389325 ",
+    name: "Mr Henry Bangura",
+    position: "Chairman",
+    image: "/assets/leadership/Henry-Bangura.jpg",
     location: "Kuwait",
     term: "2023-2026",
     bio: "Henry Bangura brings over 15 years of experience in community development and has been instrumental in establishing MDPU's educational programs.",
   },
   {
-    name: "Mohamed Sesay",
+    name: "Mrs Sento Koroma",
     position: "Vice President",
-    image: "/assets/leadership/mohamed-sesay.jpg",
-    email: "vicepresident@mdpu.org",
-    phone: "+232 ",
+    image: undefined, // Image not available yet
     location: "Freetown, Sierra Leone",
     term: "2023-2026",
     bio: "Mohamed oversees our international operations and has successfully established chapters in the UK and Europe.",
@@ -37,32 +33,27 @@ const executiveCommittee = [
   {
     name: "Henry Koroma",
     position: "Secretary General",
-    image: "/assets/leadership/henry-koroma.jpg",
-    email: "secretary@mdpu.org",
-    phone: "+23277371080",
+    image: undefined, // Image not available yet
     location: "Freetown, Sierra Leone",
     term: "2023-2026",
     bio: "Henry Koroma manages our administrative operations and ensures smooth communication between all chapters and members.",
   },
   {
-    name: "Mariatu Kabia",
+    name: "Mrs Mariatu Kabia",
     position: "DP Secretary General",
     image: "/assets/leadership/mariatu-kabia.jpg",
-    email: "secretary@mdpu.org",
-    phone: "+23276201943",
     location: "Freetown, Sierra Leone",
-    term: "2023-2026",
+    term: "2025-2028",
     bio: "Mariatu Kabia manages our administrative operations and ensures smooth communication between all chapters and members.",
   },
+  
   {
-    name: "Ibrahim Conteh",
+    name: "Mrs Adama Mantie Koroma",
     position: "Treasurer",
-    image: "/assets/leadership/ibrahim-conteh.jpg",
-    email: "treasurer@mdpu.org",
-    phone: "+232 ",
+    image: "/assets/leadership/Adama-Mantie-Koroma.jpg",
     location: "Freetown, Sierra Leone",
     term: "2023-2025",
-    bio: "Ibrahim brings financial expertise from his career in banking and ensures transparent financial management of our organization.",
+    bio: "Mrs Adama Mantie Koroma brings financial expertise from his career in banking and ensures transparent financial management of our organization.",
   },
 ];
 
@@ -70,17 +61,14 @@ const boardMembers = [
   {
     name: "Dr. Isatu Fofanah",
     position: "Board Member - Education",
-    image: "/assets/leadership/isatu-fofanah.jpg",
-    email: "education@mdpu.org",
+    image: undefined, // Image not available yet
     location: "Freetown, Sierra Leone",
-    term: "2023-2026",
     bio: "Dr. Fofanah leads our educational initiatives and scholarship programs, bringing expertise from her career in academia.",
   },
   {
     name: "Alhaji Sorie Kamara",
     position: "Board Member - Cultural Affairs",
-    image: "/assets/leadership/sorie-kamara.jpg",
-    email: "cultural@mdpu.org",
+    image: undefined, // Image not available yet
     location: "Freetown, Sierra Leone",
     term: "2023-2026",
     bio: "Alhaji Kamara is a respected elder who ensures our cultural traditions and heritage are preserved and celebrated.",
@@ -88,8 +76,7 @@ const boardMembers = [
   {
     name: "Mariama Koroma",
     position: "Board Member - Youth Development",
-    image: "/assets/leadership/mariama-koroma.jpg",
-    email: "youth@mdpu.org",
+    image: undefined, // Image not available yet
     location: "Freetown, Sierra Leone",
     term: "2023-2026",
     bio: "Mariama focuses on empowering young members and creating opportunities for the next generation of leaders.",
@@ -97,8 +84,7 @@ const boardMembers = [
   {
     name: "Dr. Mohamed Jalloh",
     position: "Board Member - Healthcare",
-    image: "/assets/leadership/mohamed-jalloh.jpg",
-    email: "healthcare@mdpu.org",
+    image: undefined, // Image not available yet
     location: "Freetown, Sierra Leone",
     term: "2023-2026",
     bio: "Dr. Jalloh oversees our healthcare initiatives and community health programs across all chapters.",
@@ -109,8 +95,7 @@ const chapterLeaders = [
   {
     name: "Sarah ",
     position: "Chapter President - London",
-    image: "/assets/leadership/sarah-london.jpg",
-    email: "london@mdpu.org",
+    image: undefined, // Image not available yet
     location: "London, UK",
     term: "2024-2026",
     bio: "Sarah leads our largest international chapter and has been instrumental in organizing successful community events.",
@@ -118,8 +103,7 @@ const chapterLeaders = [
   {
     name: "David ",
     position: "Chapter President - New York",
-    image: "/assets/leadership/david-newyork.jpg",
-    email: "newyork@mdpu.org",
+    image: undefined, // Image not available yet
     location: "New York, USA",
     term: "2024-2026",
     bio: "David coordinates activities for our East Coast members and manages partnerships with local organizations.",
@@ -127,8 +111,7 @@ const chapterLeaders = [
   {
     name: "Johnson",
     position: "Chapter President - Toronto",
-    image: "/assets/leadership/johnson-toronto.jpg",
-    email: "toronto@mdpu.org",
+    image: undefined, // Image not available yet
     location: "Toronto, Canada",
     term: "2024-2026",
     bio: "Aisha leads our Canadian chapter and focuses on youth engagement and educational programs.",

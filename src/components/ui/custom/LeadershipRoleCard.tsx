@@ -36,9 +36,9 @@ export function LeadershipRoleCard({
     <Card className={`h-full ${className || ""}`}>
       <CardHeader className="text-center">
         <div className="flex justify-center mb-4">
-          <Avatar className="w-24 h-24">
-            <AvatarImage src={image} alt={name} />
-            <AvatarFallback className="bg-brand-forest text-white text-xl">
+          <Avatar className="w-24 h-24 border-4 border-brand-gold/20 shadow-lg">
+            <AvatarImage src={image} alt={name} className="object-cover" />
+            <AvatarFallback className="bg-gradient-to-br from-brand-primary to-brand-secondary text-white text-xl font-bold">
               {initials}
             </AvatarFallback>
           </Avatar>

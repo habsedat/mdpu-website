@@ -38,3 +38,9 @@ Images are automatically displayed in the leadership cards. If an image is missi
 1. Save images in this directory with the exact filenames listed above
 2. Ensure images are optimized for web (compressed but high quality)
 3. Test the leadership page to verify images display correctly
+
+
+
+
+
+

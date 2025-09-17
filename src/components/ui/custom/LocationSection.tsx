@@ -30,7 +30,7 @@ export function LocationSection() {
             Our Ancestral Home
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            Discover the beautiful village of Matamba, Sierra Leone - the heart of our heritage and the foundation of our community's strength.
+            Discover the beautiful village of Matamba, Tonkolili District, Sierra Leone - the heart of our heritage and the foundation of our community's strength.
           </p>
         </div>
 
