@@ -279,3 +279,11 @@ export const exportMonthlyReport = onRequest(async (req, res) => {
       res.status(500).json({ error: 'Internal server error' });
     }
   });
+
+/**
+ * Minimal Next.js API proxy to satisfy hosting rewrite.
+ * You can expand this to actually proxy to your Next runtime if needed.
+ */
+export const nextjsFunc = onRequest(async (req, res) => {
+  res.status(200).json({ status: 'ok' });
+});

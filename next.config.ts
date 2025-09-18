@@ -1,8 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Enable server-side functionality for Firebase Functions
-  // output: 'export', // Removed for server-side functionality
+  // Static export for Firebase Hosting
+  output: 'export',
   trailingSlash: true,
   images: {
     domains: ['firebasestorage.googleapis.com'],
