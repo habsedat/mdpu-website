@@ -9,8 +9,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { collection, query, orderBy, getDocs, doc, updateDoc } from 'firebase/firestore';
-import { db } from '@/lib/firebase';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { collection, query, orderBy, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { httpsCallable } from 'firebase/functions';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { db, functions, auth } from '@/lib/firebase';
 import { Application, Member, Project, Event, Payment, MonthlyReport } from '@/types/firestore';
 import { 
   Users, 
@@ -26,9 +30,10 @@ import {
   Image as ImageIcon,
   AlertCircle
 } from 'lucide-react';
+import { addDoc } from 'firebase/firestore';
 
 export default function AdminDashboard() {
-  const { user, isAdmin, loading } = useAuth();
+  const { user, isAdmin, isSuperAdmin, loading } = useAuth();
   const [applications, setApplications] = useState<Application[]>([]);
   const [members, setMembers] = useState<Member[]>([]);
   const [projects, setProjects] = useState<Project[]>([]);
@@ -36,6 +41,17 @@ export default function AdminDashboard() {
   const [payments, setPayments] = useState<Payment[]>([]);
   const [reports, setReports] = useState<MonthlyReport[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [showAddMemberForm, setShowAddMemberForm] = useState(false);
+  const [editingMember, setEditingMember] = useState<Member | null>(null);
+  const [expandedApplication, setExpandedApplication] = useState<string | null>(null);
+  const [newMember, setNewMember] = useState({
+    fullName: '',
+    email: '',
+    chapter: '',
+    role: '',
+    bio: '',
+    password: '' // Add password for auto-creating accounts
+  });
 
   useEffect(() => {
     if (user && isAdmin && !loading) {
@@ -58,7 +74,8 @@ export default function AdminDashboard() {
       const membersQuery = query(collection(db, 'members'), orderBy('fullName'));
       const membersSnapshot = await getDocs(membersQuery);
       const membersData = membersSnapshot.docs.map(doc => ({
-        uid: doc.id,
+        id: doc.id, // Use id instead of uid for consistency
+        uid: doc.data().uid || doc.id, // Keep uid for backward compatibility
         ...doc.data()
       })) as Member[];
       setMembers(membersData);
@@ -108,24 +125,307 @@ export default function AdminDashboard() {
 
   const handleApproveApplication = async (applicationId: string) => {
     try {
-      const response = await fetch('/api/admin/approve', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ applicationId }),
+      const application = applications.find(app => app.id === applicationId);
+      if (!application) {
+        alert('Application not found');
+        return;
+      }
+
+      console.log('Approving application:', application);
+
+      // Step 1: Update application status
+      await updateDoc(doc(db, 'applications', applicationId), {
+        status: 'approved',
+        updatedAt: new Date(),
+        approvedBy: user?.uid,
+        approvedAt: new Date(),
       });
 
-      if (response.ok) {
-        // Refresh data
-        loadAdminData();
-        alert('Application approved successfully!');
+      // Step 2: Create member profile (public)
+      await addDoc(collection(db, 'members'), {
+        uid: applicationId, // Use application ID as member ID
+        fullName: application.fullName,
+        email: application.email,
+        chapter: application.chapter,
+        role: 'Member',
+        joinDate: new Date(),
+        status: 'active',
+        createdAt: new Date(),
+        phone: (application as any).phone || '',
+        fatherName: (application as any).fatherName || '',
+        motherName: (application as any).motherName || '',
+        country: (application as any).country || '',
+        city: (application as any).city || '',
+      });
+
+      // Step 3: Create Firebase Auth account
+      if ((application as any).password) {
+        try {
+          // Temporarily sign out current admin to create new user
+          const currentUser = auth.currentUser;
+          await auth.signOut();
+          
+          // Create new user account
+          const userCredential = await createUserWithEmailAndPassword(
+            auth, 
+            application.email, 
+            (application as any).password
+          );
+          
+          console.log('Account created:', userCredential.user.uid);
+          
+          // Update application with auth UID
+          await updateDoc(doc(db, 'applications', applicationId), {
+            accountCreated: true,
+            authUID: userCredential.user.uid,
+            accountCreatedAt: new Date(),
+          });
+
+          alert(`✅ SUCCESS! 
+          
+Application approved and account created for ${application.fullName}!
+
+📧 Email: ${application.email}
+🔐 Password: ${(application as any).password}
+🆔 Account ID: ${userCredential.user.uid}
+
+The member can now sign in using "Members Sign In" button.
+
+⚠️ Note: You will need to sign back in as admin.`);
+          
+          // Redirect to sign-in page
+          window.location.href = '/auth/signin?redirect=/admin';
+          
+        } catch (accountError: any) {
+          console.error('Error creating account:', accountError);
+          
+          // Re-authenticate admin if account creation failed
+          alert(`✅ Application approved and member created! 
+
+📋 MEMBER ACCOUNT DETAILS:
+📧 Email: ${application.email}
+🔐 Password: ${(application as any).password}
+
+🔧 NEXT STEP - Create Account Manually:
+1. Go to Firebase Console → Authentication → Users
+2. Click "Add user"
+3. Use the email and password above
+4. Then the member can sign in!
+
+Link: https://console.firebase.google.com/project/mdpu-website/authentication/users`);
+        }
       } else {
-        throw new Error('Failed to approve application');
+        alert(`Application approved and member created! 
+
+⚠️ No password provided in application - account creation skipped.`);
       }
-    } catch (error) {
+
+      loadAdminData();
+    } catch (error: any) {
       console.error('Error approving application:', error);
-      alert('Error approving application. Please try again.');
+      alert(`Error approving application: ${error.message}`);
+    }
+  };
+
+  const handleAddMember = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    try {
+      // Add to members collection (public profiles)
+      const memberDoc = await addDoc(collection(db, 'members'), {
+        fullName: newMember.fullName,
+        email: newMember.email,
+        chapter: newMember.chapter,
+        role: newMember.role || 'Member',
+        bio: newMember.bio,
+        joinDate: new Date(),
+        status: 'active',
+        createdAt: new Date(),
+      });
+
+      // Auto-create Firebase Auth account if password provided
+      if (newMember.password) {
+        try {
+          // Temporarily sign out current admin to create new user
+          const currentUser = auth.currentUser;
+          await auth.signOut();
+          
+          // Create new user account
+          const userCredential = await createUserWithEmailAndPassword(
+            auth, 
+            newMember.email, 
+            newMember.password
+          );
+          
+          console.log('Account created for manually added member:', userCredential.user.uid);
+          
+          // Update member document with auth UID
+          await updateDoc(doc(db, 'members', memberDoc.id), {
+            authUID: userCredential.user.uid,
+            accountCreated: true,
+            accountCreatedAt: new Date(),
+            accountCreatedBy: user?.uid,
+          });
+
+          alert(`✅ SUCCESS! 
+          
+Member added and account created for ${newMember.fullName}!
+
+📧 Email: ${newMember.email}
+🔐 Password: ${newMember.password}
+🆔 Account ID: ${userCredential.user.uid}
+
+The member can now sign in using "Members Sign In" button.
+
+⚠️ Note: You will need to sign back in as admin.`);
+          
+          // Redirect to sign-in page
+          window.location.href = '/auth/signin?redirect=/admin';
+          
+        } catch (accountError: any) {
+          console.error('Error creating account for manual member:', accountError);
+          
+          alert(`✅ Member added successfully! 
+
+📋 MEMBER ACCOUNT DETAILS:
+📧 Email: ${newMember.email}
+🔐 Password: ${newMember.password}
+
+🔧 NEXT STEP - Create Account Manually:
+1. Go to Firebase Console → Authentication → Users
+2. Click "Add user"
+3. Use the email and password above
+4. Then the member can sign in!
+
+Link: https://console.firebase.google.com/project/mdpu-website/authentication/users`);
+        }
+      } else {
+        alert('Member added successfully! No password provided - account creation skipped.');
+      }
+
+      // Reset form and close
+      setNewMember({
+        fullName: '',
+        email: '',
+        chapter: '',
+        role: '',
+        bio: '',
+        password: ''
+      });
+      setShowAddMemberForm(false);
+      loadAdminData();
+      
+    } catch (error) {
+      console.error('Error adding member:', error);
+      alert('Error adding member. Please try again.');
+    }
+  };
+
+  // Handle editing a member
+  const handleEditMember = (member: Member) => {
+    setEditingMember(member);
+    setNewMember({
+      fullName: member.fullName,
+      email: member.email,
+      chapter: member.chapter,
+      role: member.role || '',
+      bio: member.bio || '',
+      password: ''
+    });
+    setShowAddMemberForm(true);
+  };
+
+  // Handle updating a member
+  const handleUpdateMember = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    console.log('Update member called:', editingMember);
+    
+    if (!editingMember) {
+      alert('No member selected for editing');
+      return;
+    }
+    
+    if (!editingMember.id) {
+      alert('Member ID is missing');
+      console.error('Member data:', editingMember);
+      return;
+    }
+    
+    try {
+      console.log('Updating member with ID:', editingMember.id);
+      
+      // Update member in Firestore
+      await updateDoc(doc(db, 'members', editingMember.id), {
+        fullName: newMember.fullName,
+        email: newMember.email,
+        chapter: newMember.chapter,
+        role: newMember.role || 'Member',
+        bio: newMember.bio,
+        updatedAt: new Date(),
+      });
+
+      alert('Member updated successfully!');
+
+      // Reset form and close
+      setEditingMember(null);
+      setNewMember({
+        fullName: '',
+        email: '',
+        chapter: '',
+        role: '',
+        bio: '',
+        password: ''
+      });
+      setShowAddMemberForm(false);
+      loadAdminData();
+      
+    } catch (error: any) {
+      console.error('Error updating member:', error);
+      alert(`Error updating member: ${error.message}`);
+    }
+  };
+
+  // Handle deleting a member and their Firebase Auth account
+  const handleDeleteMember = async (member: Member) => {
+    console.log('Delete member called:', member);
+    
+    if (!confirm(`Are you sure you want to delete ${member.fullName}? This will also delete their Firebase Auth account if it exists.`)) return;
+    
+    if (!member.id) {
+      alert('Member ID is missing');
+      console.error('Member data:', member);
+      return;
+    }
+    
+    try {
+      console.log('Deleting member with ID:', member.id);
+      
+      // Delete from Firestore
+      await deleteDoc(doc(db, 'members', member.id));
+
+      // Try to delete Firebase Auth account if it exists
+      if (member.authUID) {
+        try {
+          // Call a Cloud Function to delete the user (since client can't delete other users)
+          const deleteUserFunction = httpsCallable(functions, 'deleteUser');
+          await deleteUserFunction({ uid: member.authUID });
+          
+          alert(`✅ Member ${member.fullName} deleted successfully!\n\n🔥 Firebase Auth account also deleted.`);
+        } catch (authError: any) {
+          console.error('Error deleting Firebase Auth account:', authError);
+          
+          alert(`✅ Member ${member.fullName} deleted from database!\n\n⚠️ Could not delete Firebase Auth account automatically.\n\n🔧 Manual deletion required:\n1. Go to Firebase Console → Authentication → Users\n2. Find and delete: ${member.email}\n\nLink: https://console.firebase.google.com/project/mdpu-website/authentication/users`);
+        }
+      } else {
+        alert(`✅ Member ${member.fullName} deleted successfully!`);
+      }
+
+      loadAdminData();
+      
+    } catch (error) {
+      console.error('Error deleting member:', error);
+      alert('Error deleting member. Please try again.');
     }
   };
 
@@ -332,6 +632,28 @@ export default function AdminDashboard() {
             </Card>
           </div>
 
+          {/* Super Admin Role Management */}
+          {isSuperAdmin && (
+            <Card className="mb-6 border-purple-200 bg-purple-50">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-purple-800">
+                  <Users className="w-5 h-5" />
+                  Super Admin Controls
+                </CardTitle>
+                <CardDescription>
+                  Manage admin roles and permissions for MDPU officers.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <Button asChild className="bg-purple-600 hover:bg-purple-700">
+                  <Link href="/admin/roles">
+                    Manage Admin Roles
+                  </Link>
+                </Button>
+              </CardContent>
+            </Card>
+          )}
+
           {/* Main Content Tabs */}
           <Tabs defaultValue="applications" className="space-y-6">
             <TabsList className="grid w-full grid-cols-3">
@@ -367,15 +689,63 @@ export default function AdminDashboard() {
                                 {application.chapter} • Applied {formatDate(application.createdAt)}
                               </p>
                             </div>
-                            <Badge className={getStatusColor(application.status)}>
-                              {application.status}
-                            </Badge>
+                            <div className="flex gap-2 items-center">
+                              <Badge className={getStatusColor(application.status)}>
+                                {application.status}
+                              </Badge>
+                              <Button
+                                size="sm"
+                                variant="outline"
+                                onClick={() => setExpandedApplication(
+                                  expandedApplication === application.id ? null : application.id!
+                                )}
+                              >
+                                {expandedApplication === application.id ? 'Hide Details' : 'View Details'}
+                              </Button>
+                            </div>
                           </div>
+
+                          {/* Expanded Details */}
+                          {expandedApplication === application.id && (
+                            <div className="bg-gray-50 rounded-lg p-4 mb-4">
+                              <h4 className="font-medium mb-3">Complete Application Details</h4>
+                              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                                <div>
+                                  <p><strong>Full Name:</strong> {application.fullName}</p>
+                                  <p><strong>Email:</strong> {application.email}</p>
+                                  <p><strong>Phone:</strong> {(application as any).phone || 'Not provided'}</p>
+                                  <p><strong>Chapter:</strong> {application.chapter}</p>
+                                </div>
+                                <div>
+                                  <p><strong>Father's Name:</strong> {(application as any).fatherName || 'Not provided'}</p>
+                                  <p><strong>Mother's Name:</strong> {(application as any).motherName || 'Not provided'}</p>
+                                  <p><strong>Country:</strong> {(application as any).country || 'Not provided'}</p>
+                                  <p><strong>City:</strong> {(application as any).city || 'Not provided'}</p>
+                                </div>
+                              </div>
+                              
+                              {application.notes && (
+                                <div className="mt-4">
+                                  <p className="font-medium text-gray-700">Additional Message:</p>
+                                  <p className="text-gray-600 bg-white p-3 rounded border mt-1">{application.notes}</p>
+                                </div>
+                              )}
+
+                              <div className="mt-4 p-3 bg-blue-50 rounded border">
+                                <p className="text-sm text-blue-800">
+                                  <strong>Application ID:</strong> {application.id}
+                                </p>
+                                <p className="text-sm text-blue-800">
+                                  <strong>Submitted:</strong> {formatDate(application.createdAt)}
+                                </p>
+                              </div>
+                            </div>
+                          )}
                           
-                          {application.notes && (
+                          {application.notes && !expandedApplication && (
                             <div className="mb-4">
                               <p className="text-sm font-medium text-gray-700">Notes:</p>
-                              <p className="text-sm text-gray-600">{application.notes}</p>
+                              <p className="text-sm text-gray-600">{application.notes.substring(0, 100)}...</p>
                             </div>
                           )}
 
@@ -413,30 +783,106 @@ export default function AdminDashboard() {
                   <CardHeader>
                     <CardTitle className="flex items-center justify-between">
                       Public Members
-                      <Button size="sm">
+                      <Button size="sm" onClick={() => setShowAddMemberForm(true)}>
                         <Plus className="w-4 h-4 mr-1" />
                         Add Member
                       </Button>
                     </CardTitle>
                   </CardHeader>
                   <CardContent>
+                    {showAddMemberForm && (
+                      <div className="border rounded-lg p-4 mb-4 bg-blue-50">
+                        <h4 className="font-medium mb-3">{editingMember ? 'Edit Member' : 'Add New Member'}</h4>
+                        <form onSubmit={editingMember ? handleUpdateMember : handleAddMember} className="space-y-3">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <Input
+                              placeholder="Full Name"
+                              value={newMember.fullName}
+                              onChange={(e) => setNewMember({...newMember, fullName: e.target.value})}
+                              required
+                            />
+                            <Input
+                              type="email"
+                              placeholder="Email"
+                              value={newMember.email}
+                              onChange={(e) => setNewMember({...newMember, email: e.target.value})}
+                              required
+                            />
+                          </div>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                            <Input
+                              placeholder="Chapter/Location"
+                              value={newMember.chapter}
+                              onChange={(e) => setNewMember({...newMember, chapter: e.target.value})}
+                              required
+                            />
+                            <Input
+                              placeholder="Role/Position"
+                              value={newMember.role}
+                              onChange={(e) => setNewMember({...newMember, role: e.target.value})}
+                            />
+                          </div>
+                          <Textarea
+                            placeholder="Bio (optional)"
+                            value={newMember.bio}
+                            onChange={(e) => setNewMember({...newMember, bio: e.target.value})}
+                            className="min-h-[80px]"
+                          />
+                          {!editingMember && (
+                            <Input
+                              type="password"
+                              placeholder="Password (optional - for auto-creating account)"
+                              value={newMember.password}
+                              onChange={(e) => setNewMember({...newMember, password: e.target.value})}
+                            />
+                          )}
+                          <div className="flex gap-2">
+                            <Button type="submit" size="sm" className="bg-green-600 hover:bg-green-700">
+                              {editingMember ? 'Update Member' : 'Add Member'}
+                            </Button>
+                            <Button type="button" size="sm" variant="outline" onClick={() => {
+                              setShowAddMemberForm(false);
+                              setEditingMember(null);
+                              setNewMember({
+                                fullName: '',
+                                email: '',
+                                chapter: '',
+                                role: '',
+                                bio: '',
+                                password: ''
+                              });
+                            }}>
+                              Cancel
+                            </Button>
+                          </div>
+                        </form>
+                      </div>
+                    )}
+                    
                     <div className="space-y-3 max-h-64 overflow-y-auto">
-                      {members.map((member) => (
-                        <div key={member.uid} className="flex justify-between items-center p-2 border rounded">
-                          <div>
-                            <p className="font-medium">{member.fullName}</p>
-                            <p className="text-sm text-gray-600">{member.chapter}</p>
-                          </div>
-                          <div className="flex gap-1">
-                            <Button size="sm" variant="outline">
-                              <Edit className="w-3 h-3" />
-                            </Button>
-                            <Button size="sm" variant="outline">
-                              <Trash2 className="w-3 h-3" />
-                            </Button>
-                          </div>
+                      {members.length === 0 ? (
+                        <div className="text-center py-4 text-gray-500">
+                          No members found. Add members manually or approve applications.
                         </div>
-                      ))}
+                      ) : (
+                        members.map((member) => (
+                          <div key={member.uid} className="flex justify-between items-center p-2 border rounded">
+                            <div>
+                              <p className="font-medium">{member.fullName}</p>
+                              <p className="text-sm text-gray-600">{member.chapter}</p>
+                              {member.role && <p className="text-xs text-blue-600">{member.role}</p>}
+                            </div>
+                            <div className="flex gap-1">
+                              <Button size="sm" variant="outline" onClick={() => handleEditMember(member)}>
+                                <Edit className="w-3 h-3" />
+                              </Button>
+                              <Button size="sm" variant="outline" onClick={() => handleDeleteMember(member)}>
+                                <Trash2 className="w-3 h-3" />
+                              </Button>
+                            </div>
+                          </div>
+                        ))
+                      )}
                     </div>
                   </CardContent>
                 </Card>

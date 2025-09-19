@@ -37,8 +37,10 @@ export interface Profile {
 
 // Public member card
 export interface Member {
+  id?: string; // Firestore document ID
   uid: string;
   fullName: string;
+  email: string; // Add email field
   role?: string;
   chapter: string;
   avatarUrl?: string;
@@ -47,6 +49,12 @@ export interface Member {
   location?: string;
   position?: string;
   image?: string;
+  status?: string; // Add status field
+  authUID?: string; // Firebase Auth UID if account exists
+  accountCreated?: boolean; // Whether Firebase Auth account was created
+  joinDate?: Date;
+  createdAt?: Date;
+  updatedAt?: Date;
 }
 
 // Project types
@@ -132,10 +140,59 @@ export interface Media {
 }
 
 // User roles
-export type UserRole = 'member' | 'admin';
+export type UserRole = 'member' | 'admin' | 'superadmin';
 
 export interface UserClaims {
   role?: UserRole;
   email?: string;
   name?: string;
 }
+
+// Role management types
+export interface Role {
+  uid: string;
+  email: string;
+  role: 'admin' | 'superadmin';
+  assignedBy: string;
+  assignedAt: Timestamp;
+  expiresAt?: Timestamp;
+  isActive: boolean;
+}
+
+// Admin invite types
+export interface AdminInvite {
+  id?: string;
+  role: 'admin';
+  email?: string;
+  createdBy: string;
+  createdAt: Timestamp;
+  expiresAt: Timestamp; // Always now + 1 hour
+  adminExpiresAt?: Timestamp; // When the granted admin role expires
+  used: boolean;
+  usedBy?: string;
+  approvals: string[];
+  requiredApprovals: number;
+}
+
+// Admin audit types
+export type AdminAuditAction = 
+  | 'invite_created' 
+  | 'invite_approved' 
+  | 'invite_claimed' 
+  | 'invite_expired'
+  | 'role_revoked' 
+  | 'role_extended' 
+  | 'claims_refreshed'
+  | 'role_expired';
+
+export interface AdminAudit {
+  id?: string;
+  action: AdminAuditAction;
+  actorUid: string;
+  targetUid?: string;
+  inviteId?: string;
+  timestamp: Timestamp;
+  meta?: Record<string, unknown>;
+}
+
+

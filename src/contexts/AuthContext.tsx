@@ -10,6 +10,7 @@ interface AuthContextType {
   claims: UserClaims | null;
   loading: boolean;
   isAdmin: boolean;
+  isSuperAdmin: boolean;
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string) => Promise<User>;
   logout: () => Promise<void>;
@@ -51,15 +52,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const logout = async () => {
     await signOut(auth);
+    // Redirect to home page after logout
+    window.location.href = '/';
   };
 
-  const isAdmin = claims?.role === 'admin';
+  const isAdmin = claims?.role === 'admin' || claims?.role === 'superadmin';
+  const isSuperAdmin = claims?.role === 'superadmin';
 
   const value = {
     user,
     claims,
     loading,
     isAdmin,
+    isSuperAdmin,
     signIn,
     signUp,
     logout,

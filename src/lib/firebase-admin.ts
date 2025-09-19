@@ -31,6 +31,12 @@ if (
   adminAuth = getAuth(adminApp);
   adminDb = getFirestore(adminApp);
   adminStorage = getStorage(adminApp);
+  
+  console.log('✅ Firebase Admin initialized successfully');
+  console.log(`📊 Project ID: ${process.env.FIREBASE_PROJECT_ID}`);
+} else {
+  console.warn('⚠️  Firebase Admin not initialized - missing environment variables');
+  console.warn('Required variables: FIREBASE_PROJECT_ID, FIREBASE_CLIENT_EMAIL, FIREBASE_PRIVATE_KEY, FIREBASE_STORAGE_BUCKET');
 }
 
 export { adminAuth, adminDb, adminStorage };

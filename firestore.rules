@@ -8,8 +8,19 @@ service cloud.firestore {
     
     function isAdmin() {
       return isAuthenticated() && 
-             resource.data != null &&
              request.auth.token.get('role', '') == 'admin';
+    }
+    
+    function isAdminClaim() {
+      return isAuthenticated() && 
+             (request.auth.token.get('role', '') == 'admin' || 
+              request.auth.token.get('role', '') == 'superadmin' ||
+              request.auth.uid == 'cE2LxjTCDTWDxesSYHtLN9sTnpn1'); // Temporary: allow your specific UID
+    }
+    
+    function isSuperAdmin() {
+      return isAuthenticated() && 
+             request.auth.token.get('role', '') == 'superadmin';
     }
     
     function isOwner(uid) {
@@ -19,48 +30,67 @@ service cloud.firestore {
     // Public collections (read-only for non-admins)
     match /members/{document} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow write: if isAdminClaim();
     }
     
     match /projects/{document} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow write: if isAdminClaim();
     }
     
     match /events/{document} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow write: if isAdminClaim();
     }
     
-    // Applications - users can create and read their own, admins can read/write all
+    // Applications - users can create, admins can read/write all
     match /applications/{document} {
-      allow create: if isAuthenticated() && request.auth.uid == resource.data.uid;
-      allow read: if isOwner(resource.data.uid) || isAdmin();
-      allow update, delete: if isAdmin();
+      allow create: if true; // Allow public application submissions
+      allow read: if isAdminClaim() || isOwner(uid);
+      allow update, delete: if isAdminClaim() || isOwner(uid);
     }
     
     // Profiles - private, only owner and admins can access
     match /profiles/{uid} {
-      allow read, write: if isOwner(uid) || isAdmin();
-      allow create, delete: if isAdmin();
+      allow read, write: if isOwner(uid) || isAdminClaim();
+      allow create, delete: if isAdminClaim();
     }
     
     // Payments - readable by owner or admin, no client writes
     match /payments/{document} {
-      allow read: if isOwner(resource.data.uid) || isAdmin();
+      allow read: if isOwner(resource.data.uid) || isAdminClaim();
       allow write: if false; // Only server/webhooks can write
     }
     
     // Reports - admin only
     match /reports/{document=**} {
-      allow read: if isAdmin();
+      allow read: if isAdminClaim();
       allow write: if false; // Only server functions can write
     }
     
     // Media metadata
     match /media/{document} {
       allow read: if true;
-      allow write: if isAdmin();
+      allow write: if isAdminClaim();
+    }
+    
+    // Roles collection - source of truth for admin roles
+    match /roles/{uid} {
+      allow read: if isAdminClaim() || isOwner(uid);
+      allow write: if false; // Only callable functions can write
+    }
+    
+    // Admin invites collection - superadmin readable, functions writable
+    match /adminInvites/{inviteId} {
+      allow read: if isSuperAdmin();
+      allow write: if false; // Only callable functions can write
+    }
+    
+    // Admin audit log - superadmin readable only
+    match /adminAudit/{logId} {
+      allow read: if isSuperAdmin();
+      allow write: if false; // Only callable functions can write
     }
   }
 }
+

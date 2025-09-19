@@ -67,6 +67,13 @@ export function SiteHeader() {
                 </Link>
               );
             })}
+            
+            {/* Members Sign In Button */}
+            <Button asChild className="bg-brand-gold hover:bg-brand-gold/90 text-brand-charcoal">
+              <Link href="/auth/signin">
+                Members Sign In
+              </Link>
+            </Button>
           </nav>
 
           {/* CTA Buttons */}

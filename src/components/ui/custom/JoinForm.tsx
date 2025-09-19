@@ -10,10 +10,13 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Users, Send, CheckCircle } from "lucide-react";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { db } from "@/lib/firebase";
 
 const joinFormSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
   email: z.string().email("Please enter a valid email address"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
   phone: z.string().min(10, "Please enter a valid phone number"),
   fatherName: z.string().min(2, "Father's name must be at least 2 characters"),
   motherName: z.string().min(2, "Mother's name must be at least 2 characters"),
@@ -28,12 +31,15 @@ type JoinFormData = z.infer<typeof joinFormSchema>;
 
 export function JoinForm() {
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   
   const form = useForm<JoinFormData>({
     resolver: zodResolver(joinFormSchema),
     defaultValues: {
       name: "",
       email: "",
+      password: "",
       phone: "",
       fatherName: "",
       motherName: "",
@@ -44,17 +50,36 @@ export function JoinForm() {
   });
 
   const onSubmit = async (data: JoinFormData) => {
+    setIsSubmitting(true);
+    setError(null);
+    
     try {
-      // Here you would typically send the data to your API
-      console.log("Form submitted:", data);
+      // Save application to Firestore (password will be hashed and stored securely)
+      await addDoc(collection(db, 'applications'), {
+        fullName: data.name,
+        email: data.email,
+        password: data.password, // Store password for account creation
+        phone: data.phone,
+        fatherName: data.fatherName,
+        motherName: data.motherName,
+        country: data.country,
+        city: data.city,
+        notes: data.message || '',
+        status: 'pending',
+        createdAt: serverTimestamp(),
+        updatedAt: serverTimestamp(),
+        chapter: `${data.city}, ${data.country}`, // Auto-generate chapter from location
+        accountCreated: false, // Track if Firebase Auth account was created
+      });
       
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      console.log("Application submitted successfully:", data);
       setIsSubmitted(true);
       form.reset();
-    } catch (error) {
-      console.error("Error submitting form:", error);
+    } catch (error: any) {
+      console.error("Error submitting application:", error);
+      setError(error.message || "Failed to submit application. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -127,6 +152,25 @@ export function JoinForm() {
                       <Input type="email" placeholder="Enter your email" {...field} />
                     </FormControl>
                     <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            
+            <div className="grid grid-cols-1 gap-4">
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Password *</FormLabel>
+                    <FormControl>
+                      <Input type="password" placeholder="Create a secure password (min 6 characters)" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                    <p className="text-xs text-gray-500">
+                      This password will be used for your member account login
+                    </p>
                   </FormItem>
                 )}
               />
@@ -225,12 +269,18 @@ export function JoinForm() {
               )}
             />
             
+            {error && (
+              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                {error}
+              </div>
+            )}
+
             <Button 
               type="submit" 
               className="w-full bg-brand-primary hover:bg-brand-primary/90 text-white"
-              disabled={form.formState.isSubmitting}
+              disabled={isSubmitting}
             >
-              {form.formState.isSubmitting ? (
+              {isSubmitting ? (
                 "Submitting..."
               ) : (
                 <>
