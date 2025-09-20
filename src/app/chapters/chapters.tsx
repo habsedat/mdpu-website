@@ -171,11 +171,34 @@ export default function Chapters() {
 
   return (
     <>
-      <PageHero
-        title="Our Chapters"
-        subtitle="Global Community"
-        description="Connect with Mathamba descendants worldwide through our network of chapters. Find your local community or start a new chapter in your area."
-      />
+      {/* Chapters Hero - Brown/Earth Theme */}
+      <div className="relative bg-gradient-to-br from-amber-700 via-orange-800 to-red-900 text-white overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 bg-black/20"></div>
+        <div className="absolute inset-0 opacity-30">
+          <div className="absolute inset-0 bg-gradient-to-br from-white/15 to-transparent"></div>
+        </div>
+        
+        <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
+          <div className="max-w-4xl mx-auto text-center">
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 mb-6">
+              <Globe className="w-4 h-4" />
+              <span className="text-sm font-medium">Global Community</span>
+            </div>
+            
+            {/* Title */}
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 leading-tight">
+              Our Chapters
+            </h1>
+            
+            {/* Description */}
+            <p className="text-base sm:text-lg text-amber-100 mb-6 max-w-3xl mx-auto leading-relaxed px-4 sm:px-0">
+              Connect with Mathamba descendants worldwide through our network of chapters. Find your local community or start a new chapter in your area.
+            </p>
+          </div>
+        </div>
+      </div>
 
       {/* Existing Chapters */}
       <Section>

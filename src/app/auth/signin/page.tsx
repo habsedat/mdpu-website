@@ -93,28 +93,21 @@ function SignInContent() {
 
   return (
     <>
-      <PageHero
-        title="Members Sign In"
-        subtitle="MDPU Member Portal"
-        description="Access your member dashboard and admin functions"
-      />
-
-      <Section>
-        <div className="max-w-md mx-auto">
-          <Card>
-            <CardHeader className="text-center">
-              <div className="w-12 h-12 bg-brand-forest rounded-full flex items-center justify-center mx-auto mb-4">
-                <LogIn className="w-6 h-6 text-white" />
-              </div>
-              <CardTitle className="text-2xl font-bold text-brand-charcoal">
-                Welcome Back
-              </CardTitle>
-              <CardDescription>
-                Sign in to access your MDPU member account
-              </CardDescription>
-            </CardHeader>
-            
-            <CardContent>
+      {/* Sign In Hero - Clean Professional Theme */}
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-blue-50 flex items-center justify-center p-4">
+        <div className="w-full max-w-md">
+          {/* Logo/Brand Section */}
+          <div className="text-center mb-8">
+            <div className="w-20 h-20 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-full flex items-center justify-center mx-auto mb-4 shadow-lg">
+              <LogIn className="w-10 h-10 text-white" />
+            </div>
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome Back</h1>
+            <p className="text-gray-600">Sign in to access your MDPU member account</p>
+          </div>
+          
+          {/* Sign In Card */}
+          <Card className="shadow-2xl border-0 bg-white/80 backdrop-blur-sm">
+            <CardContent className="p-8">
               {error && (
                 <Alert variant="destructive" className="mb-6">
                   <AlertCircle className="w-4 h-4" />
@@ -208,7 +201,7 @@ function SignInContent() {
             </CardContent>
           </Card>
         </div>
-      </Section>
+      </div>
     </>
   );
 }

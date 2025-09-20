@@ -5,6 +5,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import { PageHero } from '@/components/ui/custom/PageHero';
 import { Section } from '@/components/ui/custom/Section';
+import { ProfileEditor } from '@/components/ui/custom/ProfileEditor';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -34,6 +35,7 @@ export default function MemberDashboard() {
   const [profileData, setProfileData] = useState<any>(null);
   const [payments, setPayments] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [showProfileEditor, setShowProfileEditor] = useState(false);
 
   useEffect(() => {
     if (user && !loading) {
@@ -64,7 +66,11 @@ export default function MemberDashboard() {
       const membersSnapshot = await getDocs(membersQuery);
       
       if (!membersSnapshot.empty) {
-        setMemberData(membersSnapshot.docs[0].data());
+        const doc = membersSnapshot.docs[0];
+        setMemberData({ 
+          ...doc.data(), 
+          id: doc.id 
+        });
       }
 
       // Load private profile if exists
@@ -151,29 +157,62 @@ export default function MemberDashboard() {
 
   return (
     <>
-      <PageHero
-        title="Member Dashboard"
-        subtitle="MDPU Member Portal"
-        description="Welcome to your personal MDPU member dashboard"
-      />
+      {/* Member Dashboard Hero - Blue Theme */}
+      <div className="relative bg-gradient-to-br from-blue-600 via-indigo-700 to-purple-800 text-white overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 bg-black/10"></div>
+        <div className="absolute inset-0 opacity-50">
+          <div className="absolute inset-0 bg-gradient-to-br from-white/8 to-transparent"></div>
+        </div>
+        
+        <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+          <div className="max-w-4xl mx-auto text-center">
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 mb-6">
+              <UserIcon className="w-4 h-4" />
+              <span className="text-sm font-medium">MDPU Member Portal</span>
+            </div>
+            
+            {/* Title */}
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 leading-tight">
+              Member Dashboard
+            </h1>
+            
+            {/* Description */}
+            <p className="text-base sm:text-lg text-blue-100 mb-6 max-w-2xl mx-auto px-4 sm:px-0">
+              Welcome to your personal MDPU member dashboard
+            </p>
+          </div>
+        </div>
+      </div>
 
       <Section>
         <div className="max-w-6xl mx-auto">
           {/* Header with Admin Button */}
-          <div className="flex justify-between items-center mb-6">
-            <div className="flex items-center gap-4">
-              <div className="w-16 h-16 bg-brand-forest rounded-full flex items-center justify-center">
-                <UserIcon className="w-8 h-8 text-white" />
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 sm:gap-6 mb-6">
+            <div className="flex items-center gap-3 sm:gap-4 w-full sm:w-auto">
+              <div className="w-12 h-12 sm:w-16 sm:h-16 rounded-full overflow-hidden bg-gray-200 border-4 border-white shadow-lg flex-shrink-0">
+                {memberData?.profilePictureURL ? (
+                  <img
+                    src={memberData.profilePictureURL}
+                    alt="Profile"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-blue-500 to-purple-600">
+                    <UserIcon className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
+                  </div>
+                )}
               </div>
-              <div>
-                <h1 className="text-2xl font-bold text-brand-charcoal">
+              <div className="min-w-0 flex-1">
+                <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-brand-charcoal truncate">
                   {memberData?.fullName || user.displayName || user.email}
                 </h1>
-                <p className="text-gray-600">{memberData?.chapter || 'MDPU Member'}</p>
-                <div className="flex gap-2 mt-1">
-                  <Badge className="bg-green-100 text-green-800">Active Member</Badge>
+                <p className="text-sm sm:text-base text-gray-600 truncate">{memberData?.chapter || 'MDPU Member'}</p>
+                <div className="flex flex-wrap gap-1 sm:gap-2 mt-1">
+                  <Badge className="bg-green-100 text-green-800 text-xs">Active Member</Badge>
                   {isAdmin && (
-                    <Badge className="bg-purple-100 text-purple-800">
+                    <Badge className="bg-purple-100 text-purple-800 text-xs">
                       {isSuperAdmin ? 'Super Admin' : 'Admin'}
                     </Badge>
                   )}
@@ -181,7 +220,7 @@ export default function MemberDashboard() {
               </div>
             </div>
             
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
               {/* Home Button */}
               <Button asChild variant="outline">
                 <Link href="/">
@@ -207,7 +246,7 @@ export default function MemberDashboard() {
           </div>
 
           {/* Overview Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Member Since</CardTitle>
@@ -256,12 +295,12 @@ export default function MemberDashboard() {
           </div>
 
           {/* Main Content Tabs */}
-          <Tabs defaultValue="profile" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-4">
-              <TabsTrigger value="profile">Profile</TabsTrigger>
-              <TabsTrigger value="contributions">Contributions</TabsTrigger>
-              <TabsTrigger value="events">Events</TabsTrigger>
-              <TabsTrigger value="documents">Documents</TabsTrigger>
+          <Tabs defaultValue="profile" className="space-y-4 sm:space-y-6">
+            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 h-auto gap-1">
+              <TabsTrigger value="profile" className="text-xs sm:text-sm">Profile</TabsTrigger>
+              <TabsTrigger value="contributions" className="text-xs sm:text-sm">Contributions</TabsTrigger>
+              <TabsTrigger value="events" className="text-xs sm:text-sm">Events</TabsTrigger>
+              <TabsTrigger value="documents" className="text-xs sm:text-sm">Documents</TabsTrigger>
             </TabsList>
 
             {/* Profile Tab */}
@@ -298,21 +337,31 @@ export default function MemberDashboard() {
                     <CardTitle>Quick Actions</CardTitle>
                   </CardHeader>
                   <CardContent className="space-y-3">
-                    <Button className="w-full justify-start" variant="outline">
+                    <Button 
+                      className="w-full justify-start" 
+                      variant="outline"
+                      onClick={() => setShowProfileEditor(true)}
+                    >
                       <Settings className="w-4 h-4 mr-2" />
                       Update Profile
                     </Button>
-                    <Button className="w-full justify-start" variant="outline">
-                      <Heart className="w-4 h-4 mr-2" />
-                      Make Donation
+                    <Button asChild className="w-full justify-start" variant="outline">
+                      <Link href="/donate">
+                        <Heart className="w-4 h-4 mr-2" />
+                        Make Donation
+                      </Link>
                     </Button>
-                    <Button className="w-full justify-start" variant="outline">
-                      <FileText className="w-4 h-4 mr-2" />
-                      View Constitution
+                    <Button asChild className="w-full justify-start" variant="outline">
+                      <Link href="/constitution">
+                        <FileText className="w-4 h-4 mr-2" />
+                        View Constitution
+                      </Link>
                     </Button>
-                    <Button className="w-full justify-start" variant="outline">
-                      <Users className="w-4 h-4 mr-2" />
-                      Contact Chapter
+                    <Button asChild className="w-full justify-start" variant="outline">
+                      <Link href="/contact">
+                        <Users className="w-4 h-4 mr-2" />
+                        Contact Chapter
+                      </Link>
                     </Button>
                   </CardContent>
                 </Card>
@@ -420,6 +469,19 @@ export default function MemberDashboard() {
               </Card>
             </TabsContent>
           </Tabs>
+
+          {/* Profile Editor Modal */}
+          {showProfileEditor && (
+            <div className="fixed inset-0 bg-black/50 flex items-start justify-center p-4 z-50 overflow-y-auto">
+              <div className="w-full max-w-3xl my-8">
+                <ProfileEditor
+                  memberData={memberData}
+                  onUpdate={loadMemberData}
+                  onClose={() => setShowProfileEditor(false)}
+                />
+              </div>
+            </div>
+          )}
         </div>
       </Section>
     </>

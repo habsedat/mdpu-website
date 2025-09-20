@@ -46,8 +46,8 @@ service cloud.firestore {
     // Applications - users can create, admins can read/write all
     match /applications/{document} {
       allow create: if true; // Allow public application submissions
-      allow read: if isAdminClaim() || isOwner(uid);
-      allow update, delete: if isAdminClaim() || isOwner(uid);
+      allow read: if isAdminClaim() || isOwner(resource.data.uid);
+      allow update, delete: if isAdminClaim() || isOwner(resource.data.uid);
     }
     
     // Profiles - private, only owner and admins can access
@@ -90,6 +90,12 @@ service cloud.firestore {
     match /adminAudit/{logId} {
       allow read: if isSuperAdmin();
       allow write: if false; // Only callable functions can write
+    }
+    
+    // Documents collection - public read, admin write
+    match /documents/{document} {
+      allow read: if true; // Public can read documents
+      allow write: if isAdminClaim(); // Only admins can upload/manage documents
     }
   }
 }

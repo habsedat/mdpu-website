@@ -1,10 +1,16 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import { PageHero } from "@/components/ui/custom/PageHero";
 import { Section } from "@/components/ui/custom/Section";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Download, FileText, Users, Target, Award, Heart, ArrowRight } from "lucide-react";
+import { Download, FileText, Users, Target, Award, Heart, ArrowRight, Eye } from "lucide-react";
 import "./constitution-document.css";
 import Link from "next/link";
+import { db } from '@/lib/firebase';
+import { collection, getDocs, query, orderBy } from 'firebase/firestore';
+import { Document } from '@/types/firestore';
 
 export const metadata = {
   title: "Constitution - MDPU",
@@ -156,6 +162,47 @@ Dissolution:
 ];
 
 export default function Constitution() {
+  const [documents, setDocuments] = useState<Document[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadDocuments();
+  }, []);
+
+  const loadDocuments = async () => {
+    try {
+      const documentsQuery = query(collection(db, 'documents'), orderBy('uploadedAt', 'desc'));
+      const documentsSnapshot = await getDocs(documentsQuery);
+      const documentsData = documentsSnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      })) as Document[];
+      setDocuments(documentsData);
+    } catch (error) {
+      console.error('Error loading documents:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handlePreviewDocument = (document: Document) => {
+    if (document.downloadURL.startsWith('data:')) {
+      const newWindow = window.open();
+      if (newWindow) {
+        newWindow.document.write(`
+          <html>
+            <head><title>${document.title}</title></head>
+            <body style="margin:0;">
+              <embed src="${document.downloadURL}" width="100%" height="100%" type="application/pdf">
+            </body>
+          </html>
+        `);
+      }
+    } else {
+      window.open(document.downloadURL, '_blank');
+    }
+  };
+
   return (
     <>
       <PageHero
@@ -177,36 +224,72 @@ export default function Constitution() {
             </p>
           </div>
           
+          {/* Official Documents */}
           <Card className="mb-8">
             <CardHeader>
               <CardTitle className="flex items-center text-brand-charcoal">
                 <FileText className="w-6 h-6 mr-3 text-brand-forest" />
-                Document Information
+                Official Documents
               </CardTitle>
+              <CardDescription>
+                Download or view our official constitution and related documents
+              </CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                <div>
-                  <strong>Adopted:</strong> January 15, 2020
+            <CardContent>
+              {loading ? (
+                <div className="text-center py-8">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-brand-forest mx-auto mb-4"></div>
+                  <p className="text-gray-600">Loading documents...</p>
                 </div>
-                <div>
-                  <strong>Last Amended:</strong> March 10, 2024
+              ) : documents.length > 0 ? (
+                <div className="space-y-4">
+                  {documents.map((document) => (
+                    <div key={document.id} className="flex items-center justify-between p-4 border rounded-lg hover:bg-gray-50">
+                      <div className="flex items-center gap-3">
+                        <FileText className="w-8 h-8 text-red-600" />
+                        <div>
+                          <h4 className="font-medium text-brand-charcoal">{document.title}</h4>
+                          <p className="text-sm text-gray-600">
+                            Uploaded {new Date(document.uploadedAt.toDate()).toLocaleDateString()} • 
+                            {(document.fileSize / (1024 * 1024)).toFixed(1)} MB
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => handlePreviewDocument(document)}
+                          className="border-brand-forest text-brand-forest hover:bg-brand-forest hover:text-white"
+                        >
+                          <Eye className="w-4 h-4 mr-1" />
+                          View
+                        </Button>
+                        <Button 
+                          variant="outline" 
+                          size="sm"
+                          onClick={() => {
+                            const link = window.document.createElement('a');
+                            link.href = document.downloadURL;
+                            link.download = document.fileName;
+                            link.click();
+                          }}
+                          className="border-brand-clay text-brand-clay hover:bg-brand-clay hover:text-white"
+                        >
+                          <Download className="w-4 h-4 mr-1" />
+                          Download
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-                <div>
-                  <strong>Version:</strong> 2.1
+              ) : (
+                <div className="text-center py-8 text-gray-500">
+                  <FileText className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+                  <p>No documents available yet</p>
+                  <p className="text-sm">Official documents will appear here once uploaded by administrators</p>
                 </div>
-                <div>
-                  <strong>Pages:</strong> 12 pages
-                </div>
-              </div>
-              <div className="pt-4 border-t">
-                <Button asChild className="bg-brand-forest hover:bg-brand-forest/90">
-                  <Link href="/constitution.pdf" target="_blank">
-                    <Download className="w-4 h-4 mr-2" />
-                    Download PDF Version
-                  </Link>
-                </Button>
-              </div>
+              )}
             </CardContent>
           </Card>
         </div>

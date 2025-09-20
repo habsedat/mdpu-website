@@ -44,11 +44,13 @@ export interface Member {
   role?: string;
   chapter: string;
   avatarUrl?: string;
+  profilePictureURL?: string; // New profile picture field
   term?: string;
   bio?: string;
   location?: string;
   position?: string;
   image?: string;
+  phone?: string; // Add phone field
   status?: string; // Add status field
   authUID?: string; // Firebase Auth UID if account exists
   accountCreated?: boolean; // Whether Firebase Auth account was created
@@ -193,6 +195,22 @@ export interface AdminAudit {
   inviteId?: string;
   timestamp: Timestamp;
   meta?: Record<string, unknown>;
+}
+
+// Document types
+export interface Document {
+  id?: string;
+  title: string;
+  description?: string;
+  fileName: string;
+  fileSize: number;
+  fileType: string;
+  downloadURL: string;
+  uploadedBy: string;
+  uploadedAt: Timestamp;
+  isPublic: boolean;
+  category?: string;
+  updatedAt?: Timestamp;
 }
 
 

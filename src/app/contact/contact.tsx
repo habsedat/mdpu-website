@@ -97,11 +97,34 @@ export default function Contact() {
 
   return (
     <>
-      <PageHero
-        title="Contact Us"
-        subtitle="Get in Touch"
-        description="We'd love to hear from you. Reach out to us with any questions, suggestions, or to learn more about joining our community."
-      />
+      {/* Contact Hero - Teal/Cyan Theme */}
+      <div className="relative bg-gradient-to-br from-teal-500 via-cyan-600 to-blue-700 text-white overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 bg-black/20"></div>
+        <div className="absolute inset-0 opacity-30">
+          <div className="absolute inset-0 bg-gradient-to-br from-white/15 to-transparent"></div>
+        </div>
+        
+        <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
+          <div className="max-w-4xl mx-auto text-center">
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 mb-6">
+              <Mail className="w-4 h-4" />
+              <span className="text-sm font-medium">Get in Touch</span>
+            </div>
+            
+            {/* Title */}
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 leading-tight">
+              Contact Us
+            </h1>
+            
+            {/* Description */}
+            <p className="text-base sm:text-lg text-teal-100 mb-6 max-w-3xl mx-auto leading-relaxed px-4 sm:px-0">
+              We'd love to hear from you. Reach out to us with any questions, suggestions, or to learn more about joining our community.
+            </p>
+          </div>
+        </div>
+      </div>
 
       {/* Contact Information */}
       <Section>

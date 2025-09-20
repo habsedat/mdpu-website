@@ -11,11 +11,11 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { collection, query, orderBy, getDocs, doc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { collection, query, orderBy, getDocs, doc, updateDoc, deleteDoc, Timestamp } from 'firebase/firestore';
 import { httpsCallable } from 'firebase/functions';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { db, functions, auth } from '@/lib/firebase';
-import { Application, Member, Project, Event, Payment, MonthlyReport } from '@/types/firestore';
+import { Application, Member, Project, Event, Payment, MonthlyReport, Document } from '@/types/firestore';
 import { 
   Users, 
   DollarSign, 
@@ -28,7 +28,11 @@ import {
   Download,
   Calendar,
   Image as ImageIcon,
-  AlertCircle
+  AlertCircle,
+  Shield,
+  Home,
+  FileText,
+  Eye
 } from 'lucide-react';
 import { addDoc } from 'firebase/firestore';
 
@@ -40,6 +44,9 @@ export default function AdminDashboard() {
   const [events, setEvents] = useState<Event[]>([]);
   const [payments, setPayments] = useState<Payment[]>([]);
   const [reports, setReports] = useState<MonthlyReport[]>([]);
+  const [documents, setDocuments] = useState<Document[]>([]);
+  const [documentTitle, setDocumentTitle] = useState('');
+  const [uploadingDocument, setUploadingDocument] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [showAddMemberForm, setShowAddMemberForm] = useState(false);
   const [editingMember, setEditingMember] = useState<Member | null>(null);
@@ -108,13 +115,24 @@ export default function AdminDashboard() {
       setPayments(paymentsData);
 
       // Load reports
-      const reportsQuery = query(collection(db, 'reports/monthly'), orderBy('id', 'desc'));
+      const reportsQuery = query(collection(db, 'reports'), orderBy('createdAt', 'desc'));
       const reportsSnapshot = await getDocs(reportsQuery);
       const reportsData = reportsSnapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data()
       })) as MonthlyReport[];
       setReports(reportsData);
+
+      // Load documents
+      console.log('Loading documents...');
+      const documentsQuery = query(collection(db, 'documents'), orderBy('uploadedAt', 'desc'));
+      const documentsSnapshot = await getDocs(documentsQuery);
+      const documentsData = documentsSnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      })) as Document[];
+      console.log('Documents loaded:', documentsData.length, documentsData);
+      setDocuments(documentsData);
 
     } catch (error) {
       console.error('Error loading admin data:', error);
@@ -446,6 +464,105 @@ Link: https://console.firebase.google.com/project/mdpu-website/authentication/us
     }
   };
 
+  // Simple document upload function
+  const uploadDocument = async (file: File) => {
+    if (!file) {
+      alert('No file selected');
+      return;
+    }
+
+    if (file.type !== 'application/pdf') {
+      alert('Only PDF files are allowed');
+      return;
+    }
+
+    if (file.size > 10 * 1024 * 1024) { // 10MB limit
+      alert('File size must be less than 10MB');
+      return;
+    }
+
+    try {
+      setUploadingDocument(true);
+
+      // Convert file to base64
+      const reader = new FileReader();
+      reader.onload = async () => {
+        try {
+          const base64String = reader.result as string;
+          
+          // Save to Firestore
+          await addDoc(collection(db, 'documents'), {
+            title: documentTitle.trim(),
+            fileName: file.name,
+            fileSize: file.size,
+            fileType: file.type,
+            downloadURL: base64String,
+            uploadedBy: user?.uid || 'unknown',
+            uploadedAt: Timestamp.now(),
+            isPublic: true,
+            category: 'official'
+          });
+
+          alert(`✅ Document "${documentTitle}" uploaded successfully!`);
+          setDocumentTitle('');
+          console.log('Reloading admin data after document upload...');
+          await loadAdminData();
+          console.log('Admin data reloaded, documents state:', documents.length);
+        } catch (error: any) {
+          console.error('Error saving document:', error);
+          alert(`❌ Error saving document: ${error.message}`);
+        } finally {
+          setUploadingDocument(false);
+        }
+      };
+
+      reader.onerror = () => {
+        alert('❌ Error reading file');
+        setUploadingDocument(false);
+      };
+
+      reader.readAsDataURL(file);
+    } catch (error: any) {
+      console.error('Error uploading document:', error);
+      alert(`❌ Error uploading document: ${error.message}`);
+      setUploadingDocument(false);
+    }
+  };
+
+  const handleDeleteDocument = async (documentId: string, title: string) => {
+    if (!confirm(`Are you sure you want to delete "${title}"?`)) return;
+
+    try {
+      await deleteDoc(doc(db, 'documents', documentId));
+      alert('Document deleted successfully!');
+      loadAdminData();
+    } catch (error: any) {
+      console.error('Error deleting document:', error);
+      alert(`Error deleting document: ${error.message}`);
+    }
+  };
+
+  const handlePreviewDocument = (document: Document) => {
+    // Open document in new tab
+    if (document.downloadURL.startsWith('data:')) {
+      // Base64 data
+      const newWindow = window.open();
+      if (newWindow) {
+        newWindow.document.write(`
+          <html>
+            <head><title>${document.title}</title></head>
+            <body style="margin:0;">
+              <embed src="${document.downloadURL}" width="100%" height="100%" type="application/pdf">
+            </body>
+          </html>
+        `);
+      }
+    } else {
+      // URL
+      window.open(document.downloadURL, '_blank');
+    }
+  };
+
   const handleVerifyPayment = async (paymentId: string) => {
     try {
       await updateDoc(doc(db, 'payments', paymentId), {
@@ -569,16 +686,59 @@ Link: https://console.firebase.google.com/project/mdpu-website/authentication/us
 
   return (
     <>
-      <PageHero
-        title="Admin Dashboard"
-        subtitle="MDPU Administration"
-        description="Manage applications, content, and finances for the Mathamba Descendants Progressive Union."
-      />
+      {/* Admin Dashboard Hero - Dark Professional Theme */}
+      <div className="relative bg-gradient-to-br from-slate-800 via-gray-900 to-black text-white overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 bg-black/20"></div>
+        <div className="absolute inset-0 opacity-60">
+          <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent"></div>
+        </div>
+        
+        <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+          <div className="max-w-6xl mx-auto">
+            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4 lg:gap-6">
+              <div>
+                {/* Badge */}
+                <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 mb-4">
+                  <Shield className="w-4 h-4" />
+                  <span className="text-sm font-medium">MDPU Administration</span>
+                </div>
+                
+                {/* Title */}
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 leading-tight">
+                  Admin Dashboard
+                </h1>
+                
+                {/* Description */}
+                <p className="text-base sm:text-lg text-gray-300 max-w-2xl">
+                  Manage applications, content, and finances for the Mathamba Descendants Progressive Union.
+                </p>
+              </div>
+              
+              {/* Admin Actions */}
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
+                <Button asChild className="bg-purple-600 hover:bg-purple-700 text-white">
+                  <Link href="/admin/roles">
+                    <Shield className="w-4 h-4 mr-2" />
+                    Manage Admin Roles
+                  </Link>
+                </Button>
+                <Button asChild variant="outline" className="border-white text-white hover:bg-white hover:text-gray-900">
+                  <Link href="/profile/dashboard">
+                    <Home className="w-4 h-4 mr-2" />
+                    My Profile
+                  </Link>
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-      <Section>
+      <Section className="bg-gray-50">
         <div className="max-w-7xl mx-auto">
           {/* Overview Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Pending Applications</CardTitle>
@@ -655,11 +815,12 @@ Link: https://console.firebase.google.com/project/mdpu-website/authentication/us
           )}
 
           {/* Main Content Tabs */}
-          <Tabs defaultValue="applications" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-3">
-              <TabsTrigger value="applications">Applications</TabsTrigger>
-              <TabsTrigger value="content">Content</TabsTrigger>
-              <TabsTrigger value="finance">Finance</TabsTrigger>
+          <Tabs defaultValue="applications" className="space-y-4 sm:space-y-6">
+            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-4 h-auto">
+              <TabsTrigger value="applications" className="text-xs sm:text-sm">Applications</TabsTrigger>
+              <TabsTrigger value="documents" className="text-xs sm:text-sm">Documents</TabsTrigger>
+              <TabsTrigger value="content" className="text-xs sm:text-sm">Content</TabsTrigger>
+              <TabsTrigger value="finance" className="text-xs sm:text-sm">Finance</TabsTrigger>
             </TabsList>
 
             {/* Applications Tab */}
@@ -771,6 +932,145 @@ Link: https://console.firebase.google.com/project/mdpu-website/authentication/us
                       ))}
                     </div>
                   )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {/* Documents Tab */}
+            <TabsContent value="documents" className="space-y-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <FileText className="w-5 h-5" />
+                    Document Management
+                  </CardTitle>
+                  <CardDescription>
+                    Upload and manage official documents like Constitution, Bylaws, etc.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-6">
+                  {/* Upload Document Section */}
+                  <div className="border-2 border-dashed border-gray-300 rounded-lg p-6">
+                    <div className="text-center">
+                      <Upload className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                      <h3 className="text-lg font-semibold mb-2">Upload Document</h3>
+                      <p className="text-gray-600 mb-4">
+                        Enter a title and click the button to upload your PDF
+                      </p>
+                      <div className="space-y-4">
+                        <Input
+                          type="text"
+                          placeholder="Document title (e.g., Constitution)"
+                          value={documentTitle}
+                          onChange={(e) => setDocumentTitle(e.target.value)}
+                          className="max-w-md mx-auto"
+                        />
+                        <div>
+                          <input
+                            type="file"
+                            accept=".pdf"
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (file && documentTitle.trim()) {
+                                uploadDocument(file);
+                              } else if (!documentTitle.trim()) {
+                                alert('Please enter a document title first');
+                              }
+                            }}
+                            style={{ display: 'none' }}
+                            id="pdf-upload"
+                          />
+                          <Button 
+                            className="bg-blue-600 hover:bg-blue-700"
+                            onClick={() => {
+                              if (!documentTitle.trim()) {
+                                alert('Please enter a document title first');
+                                return;
+                              }
+                              const input = document.getElementById('pdf-upload') as HTMLInputElement;
+                              input?.click();
+                            }}
+                            disabled={uploadingDocument}
+                          >
+                            <Upload className="w-4 h-4 mr-2" />
+                            {uploadingDocument ? 'Uploading...' : 'Choose PDF File'}
+                          </Button>
+                        </div>
+                      </div>
+                      <p className="text-xs text-gray-500 mt-2">
+                        PDF files only, max 10MB
+                      </p>
+                      {uploadingDocument && (
+                        <div className="mt-4">
+                          <div className="flex items-center justify-center gap-2 text-blue-600">
+                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+                            <span className="text-sm">Processing document...</span>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Existing Documents */}
+                  <div>
+                    <h3 className="text-lg font-semibold mb-4">Uploaded Documents</h3>
+                    <div className="space-y-3">
+                      {documents.length > 0 ? (
+                        documents.map((document) => (
+                          <div key={document.id} className="flex items-center justify-between p-4 border rounded-lg">
+                            <div className="flex items-center gap-3">
+                              <FileText className="w-8 h-8 text-red-600" />
+                              <div>
+                                <h4 className="font-medium">{document.title}</h4>
+                                <p className="text-sm text-gray-600">
+                                  Uploaded {new Date(document.uploadedAt.toDate()).toLocaleDateString()} • 
+                                  {(document.fileSize / (1024 * 1024)).toFixed(1)} MB
+                                </p>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              <Button 
+                                variant="outline" 
+                                size="sm"
+                                onClick={() => handlePreviewDocument(document)}
+                              >
+                                <Eye className="w-4 h-4 mr-1" />
+                                Preview
+                              </Button>
+                              <Button 
+                                variant="outline" 
+                                size="sm"
+                                onClick={() => {
+                                  const link = window.document.createElement('a');
+                                  link.href = document.downloadURL;
+                                  link.download = document.fileName;
+                                  link.click();
+                                }}
+                              >
+                                <Download className="w-4 h-4 mr-1" />
+                                Download
+                              </Button>
+                              <Button 
+                                variant="outline" 
+                                size="sm" 
+                                className="text-red-600 hover:text-red-700"
+                                onClick={() => handleDeleteDocument(document.id!, document.title)}
+                              >
+                                <Trash2 className="w-4 h-4 mr-1" />
+                                Delete
+                              </Button>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="text-center py-8 text-gray-500">
+                          <FileText className="w-12 h-12 mx-auto mb-3 text-gray-300" />
+                          <p>No documents uploaded yet</p>
+                          <p className="text-sm">Upload your first document using the form above</p>
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
             </TabsContent>

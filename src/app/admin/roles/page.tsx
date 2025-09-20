@@ -415,21 +415,44 @@ export default function AdminRolesPage() {
 
   return (
     <>
-      <PageHero
-        title="Admin Role Management"
-        subtitle="Super Admin Dashboard"
-        description="Manage admin roles and permissions for MDPU officers."
-      />
+      {/* Admin Roles Hero - Purple/Indigo Theme */}
+      <div className="relative bg-gradient-to-br from-purple-600 via-indigo-700 to-violet-800 text-white overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 bg-black/10"></div>
+        <div className="absolute inset-0 opacity-40">
+          <div className="absolute inset-0 bg-gradient-to-br from-white/8 to-transparent"></div>
+        </div>
+        
+        <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+          <div className="max-w-4xl mx-auto text-center">
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 mb-6">
+              <ShieldCheck className="w-4 h-4" />
+              <span className="text-sm font-medium">Super Admin Dashboard</span>
+            </div>
+            
+            {/* Title */}
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-3 leading-tight">
+              Admin Role Management
+            </h1>
+            
+            {/* Description */}
+            <p className="text-base sm:text-lg text-purple-100 mb-6 max-w-2xl mx-auto px-4 sm:px-0">
+              Manage admin roles and permissions for MDPU officers.
+            </p>
+          </div>
+        </div>
+      </div>
 
-      <Section>
+      <Section className="bg-gradient-to-b from-purple-50 to-white">
         <div className="max-w-6xl mx-auto">
-          <Tabs defaultValue="roles" className="space-y-6">
-            <TabsList className="grid w-full grid-cols-5">
-              <TabsTrigger value="roles">Current Roles</TabsTrigger>
-              <TabsTrigger value="assign">Assign Admin Role</TabsTrigger>
-              <TabsTrigger value="invites">Active Invites</TabsTrigger>
-              <TabsTrigger value="create">Create Invite</TabsTrigger>
-              <TabsTrigger value="audit">Audit Log</TabsTrigger>
+          <Tabs defaultValue="roles" className="space-y-4 sm:space-y-6">
+            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 h-auto gap-1">
+              <TabsTrigger value="roles" className="text-xs sm:text-sm">Roles</TabsTrigger>
+              <TabsTrigger value="assign" className="text-xs sm:text-sm">Assign</TabsTrigger>
+              <TabsTrigger value="invites" className="text-xs sm:text-sm">Invites</TabsTrigger>
+              <TabsTrigger value="create" className="text-xs sm:text-sm">Create</TabsTrigger>
+              <TabsTrigger value="audit" className="text-xs sm:text-sm">Audit</TabsTrigger>
             </TabsList>
 
             {/* Current Roles Tab */}

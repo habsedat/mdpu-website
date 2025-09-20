@@ -62,13 +62,50 @@ const objectives = [
 export default function HomePage() {
   return (
     <div className="home-page">
-      {/* Hero Section */}
-      <PageHero
-        title="Mathamba Descendants Progressive Union"
-        subtitle="Building Stronger Communities"
-        description="Togetherness is Strength - Join us in building a progressive union that empowers our community and preserves our heritage for future generations."
-        showCTAs={true}
-      />
+      {/* Hero Section - Custom Design */}
+      <div className="relative bg-gradient-to-br from-emerald-600 via-teal-700 to-cyan-800 text-white overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 bg-black/10"></div>
+        <div className="absolute inset-0 opacity-20">
+          <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"></div>
+        </div>
+        
+        <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
+          <div className="max-w-4xl mx-auto text-center">
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 mb-6">
+              <Users className="w-4 h-4" />
+              <span className="text-sm font-medium">Building Stronger Communities</span>
+            </div>
+            
+            {/* Main Title */}
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl xl:text-5xl font-bold mb-4 bg-gradient-to-r from-white to-cyan-100 bg-clip-text text-transparent leading-tight">
+              Mathamba Descendants Progressive Union
+            </h1>
+            
+            {/* Subtitle */}
+            <p className="text-base sm:text-lg lg:text-xl text-cyan-100 mb-6 max-w-3xl mx-auto leading-relaxed px-4 sm:px-0">
+              Togetherness is Strength - Join us in building a progressive union that empowers our community and preserves our heritage for future generations.
+            </p>
+            
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center px-4 sm:px-0">
+              <Button asChild size="lg" className="bg-white text-emerald-700 hover:bg-gray-100 font-semibold px-8 py-4 text-lg">
+                <Link href="/membership">
+                  <Users className="w-5 h-5 mr-2" />
+                  Join Our Union
+                </Link>
+              </Button>
+              <Button asChild size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-emerald-700 font-semibold px-8 py-4 text-lg">
+                <Link href="/donate">
+                  <Heart className="w-5 h-5 mr-2" />
+                  Support Our Mission
+                </Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
 
       {/* Stats Section */}
       <Section background="muted">

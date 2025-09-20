@@ -111,11 +111,34 @@ export default function Projects() {
 
   return (
     <>
-      <PageHero
-        title="Our Projects"
-        subtitle="Making a Difference"
-        description="Explore the impactful projects and initiatives that are transforming communities and creating opportunities for Mathamba descendants worldwide."
-      />
+      {/* Projects Hero - Golden/Yellow Theme */}
+      <div className="relative bg-gradient-to-br from-yellow-500 via-orange-600 to-amber-700 text-white overflow-hidden">
+        {/* Background Pattern */}
+        <div className="absolute inset-0 bg-black/20"></div>
+        <div className="absolute inset-0 opacity-30">
+          <div className="absolute inset-0 bg-gradient-to-br from-white/15 to-transparent"></div>
+        </div>
+        
+        <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
+          <div className="max-w-4xl mx-auto text-center">
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 mb-6">
+              <Target className="w-4 h-4" />
+              <span className="text-sm font-medium">Making a Difference</span>
+            </div>
+            
+            {/* Title */}
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 leading-tight">
+              Our Projects
+            </h1>
+            
+            {/* Description */}
+            <p className="text-base sm:text-lg text-yellow-100 mb-6 max-w-3xl mx-auto leading-relaxed px-4 sm:px-0">
+              Explore the impactful projects and initiatives that are transforming communities and creating opportunities for Mathamba descendants worldwide.
+            </p>
+          </div>
+        </div>
+      </div>
 
       {/* Project Statistics */}
       <Section>

@@ -37,11 +37,35 @@ const membershipBenefits = [
 export default function Membership() {
   return (
     <>
-      <PageHero
-        title="Join MDPU"
-        subtitle="Become Part of Our Family"
-        description="Join the Mathamba Descendants Progressive Union and be part of a community that's building a brighter future through togetherness and unity."
-      />
+      {/* Membership Hero - Coral/Salmon Theme */}
+      <div className="relative bg-gradient-to-br from-coral-500 via-salmon-600 to-pink-700 text-white overflow-hidden"
+           style={{ background: 'linear-gradient(135deg, #ff7875 0%, #ff6b6b 50%, #e91e63 100%)' }}>
+        {/* Background Pattern */}
+        <div className="absolute inset-0 bg-black/20"></div>
+        <div className="absolute inset-0 opacity-30">
+          <div className="absolute inset-0 bg-gradient-to-br from-white/15 to-transparent"></div>
+        </div>
+        
+        <div className="relative container mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 lg:py-16">
+          <div className="max-w-4xl mx-auto text-center">
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm rounded-full px-4 py-2 mb-6">
+              <Users className="w-4 h-4" />
+              <span className="text-sm font-medium">Become Part of Our Family</span>
+            </div>
+            
+            {/* Title */}
+            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold mb-4 leading-tight">
+              Join MDPU
+            </h1>
+            
+            {/* Description */}
+            <p className="text-base sm:text-lg text-pink-100 mb-6 max-w-3xl mx-auto leading-relaxed px-4 sm:px-0">
+              Join the Mathamba Descendants Progressive Union and be part of a community that's building a brighter future through togetherness and unity.
+            </p>
+          </div>
+        </div>
+      </div>
 
       {/* Membership Benefits */}
       <Section>
