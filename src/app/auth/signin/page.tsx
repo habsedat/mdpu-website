@@ -58,20 +58,23 @@ function SignInContent() {
     } catch (error: any) {
       console.error('Sign-in error:', error);
       
-      let errorMessage = 'Sign-in failed. Please check your credentials.';
+      let errorMessage = 'Invalid login credentials. Please verify your email and password.';
       
       if (error.code === 'auth/user-not-found') {
-        errorMessage = 'No account found with this email address.';
-      } else if (error.code === 'auth/wrong-password') {
-        errorMessage = 'Incorrect password. Please try again.';
+        errorMessage = 'No MDPU member account found with this email address. Please check your email or contact support.';
+      } else if (error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+        errorMessage = 'Incorrect email or password. Please double-check your credentials and try again.';
       } else if (error.code === 'auth/invalid-email') {
-        errorMessage = 'Please enter a valid email address.';
+        errorMessage = 'Please enter a valid email address format.';
       } else if (error.code === 'auth/user-disabled') {
-        errorMessage = 'This account has been disabled. Contact an administrator.';
+        errorMessage = 'Your MDPU member account has been suspended. Please contact union administration for assistance.';
       } else if (error.code === 'auth/too-many-requests') {
-        errorMessage = 'Too many failed attempts. Please try again later.';
-      } else if (error.message) {
-        errorMessage = error.message;
+        errorMessage = 'Too many login attempts. Please wait a few minutes before trying again for security purposes.';
+      } else if (error.code === 'auth/network-request-failed') {
+        errorMessage = 'Network connection error. Please check your internet connection and try again.';
+      } else {
+        // Generic professional message without Firebase references
+        errorMessage = 'Unable to sign in at this time. Please verify your credentials or contact MDPU support.';
       }
       
       setError(errorMessage);
