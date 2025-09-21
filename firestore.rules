@@ -15,7 +15,8 @@ service cloud.firestore {
       return isAuthenticated() && 
              (request.auth.token.get('role', '') == 'admin' || 
               request.auth.token.get('role', '') == 'superadmin' ||
-              request.auth.uid == 'cE2LxjTCDTWDxesSYHtLN9sTnpn1'); // Temporary: allow your specific UID
+              request.auth.uid == 'cE2LxjTCDTWDxesSYHtLN9sTnpn1' || // Your specific UID
+              request.auth.uid == 'Mariatu kabia'); // Alternative identifier if needed
     }
     
     function isSuperAdmin() {
@@ -27,10 +28,14 @@ service cloud.firestore {
       return isAuthenticated() && request.auth.uid == uid;
     }
     
-    // Public collections (read-only for non-admins)
+    // Members collection - public read, members can update their own profile
     match /members/{document} {
       allow read: if true;
-      allow write: if isAdminClaim();
+      allow write: if isAdminClaim() || 
+                      (isAuthenticated() && 
+                       (resource.data.uid == request.auth.uid || 
+                        resource.data.email == request.auth.token.email ||
+                        document == request.auth.uid));
     }
     
     match /projects/{document} {
@@ -58,13 +63,16 @@ service cloud.firestore {
     
     // Payments - readable by owner or admin, no client writes
     match /payments/{document} {
-      allow read: if isOwner(resource.data.uid) || isAdminClaim();
+      allow read: if isAdminClaim() || 
+                     (isAuthenticated() && 
+                      (resource.data.uid == request.auth.uid || 
+                       resource.data.email == request.auth.token.email));
       allow write: if false; // Only server/webhooks can write
     }
     
-    // Reports - admin only
+    // Reports - admin only (temporarily more permissive)
     match /reports/{document=**} {
-      allow read: if isAdminClaim();
+      allow read: if isAuthenticated(); // Temporarily allow any authenticated user
       allow write: if false; // Only server functions can write
     }
     
@@ -96,6 +104,18 @@ service cloud.firestore {
     match /documents/{document} {
       allow read: if true; // Public can read documents
       allow write: if isAdminClaim(); // Only admins can upload/manage documents
+    }
+    
+    // Leadership collection - public read, admin write
+    match /leadership/{document} {
+      allow read: if true; // Public can read leadership assignments
+      allow write: if isAdminClaim(); // Only admins can manage leadership
+    }
+    
+    // News collection - public read for published, admin write
+    match /news/{document} {
+      allow read: if true; // Public can read all news (filtering done client-side)
+      allow write: if isAuthenticated(); // Temporarily allow any authenticated user for debugging
     }
   }
 }

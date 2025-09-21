@@ -80,10 +80,19 @@ export interface Event {
   title: string;
   dateStart: Timestamp;
   dateEnd?: Timestamp;
+  timeStart: string; // Format: "HH:MM"
+  timeEnd?: string; // Format: "HH:MM"
   location: string;
-  details: string;
-  coverUrl?: string;
+  description: string; // Short description for cards
+  details: string; // Full detailed description
+  thumbnailUrl?: string; // Event thumbnail/cover image
   gallery: string[];
+  category?: string; // e.g., "Community", "Educational", "Cultural", "Fundraising"
+  isPublic: boolean; // Whether to show on public events page
+  maxAttendees?: number; // Optional capacity limit
+  registrationRequired: boolean; // Whether registration is needed
+  contactEmail?: string; // Contact for more info
+  createdBy: string; // Admin who created the event
   createdAt: Timestamp;
   updatedAt?: Timestamp;
 }
@@ -139,6 +148,37 @@ export interface Media {
   uploadedBy: string;
   uploadedAt: Timestamp;
   folder?: string;
+}
+
+// News/Blog post types
+export type NewsCategory = 'development' | 'events' | 'entertainment' | 'community' | 'announcements' | 'culture' | 'education' | 'health' | 'agriculture' | 'general';
+export type NewsStatus = 'draft' | 'published' | 'archived';
+
+export interface NewsPost {
+  id?: string;
+  title: string;
+  summary: string; // Brief description for cards
+  content: string; // Full article content
+  category: NewsCategory;
+  status: NewsStatus;
+  featuredImage?: string; // Main image for the post
+  images: string[]; // Additional images
+  videos: string[]; // Video URLs
+  tags: string[]; // Keywords for search
+  author: string; // Admin who created it
+  authorName: string; // Display name of author
+  publishedAt?: Timestamp;
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
+  views: number; // Track popularity
+  likes: number; // Like count
+  dislikes: number; // Dislike count
+  loves: number; // Love/Heart count
+  likedBy: string[]; // User IDs who liked
+  dislikedBy: string[]; // User IDs who disliked
+  lovedBy: string[]; // User IDs who loved
+  isUrgent: boolean; // For urgent news/announcements
+  location?: string; // For location-specific news
 }
 
 // User roles
@@ -210,6 +250,34 @@ export interface Document {
   uploadedAt: Timestamp;
   isPublic: boolean;
   category?: string;
+  updatedAt?: Timestamp;
+}
+
+// Leadership types
+export type LeadershipCategory = 'executive' | 'board' | 'chapter';
+
+export interface LeadershipPosition {
+  id?: string;
+  title: string; // e.g., "Chairman", "Vice President", "Secretary General"
+  category: LeadershipCategory;
+  order: number; // For display ordering
+  description?: string;
+  isActive: boolean;
+  createdAt: Timestamp;
+  updatedAt?: Timestamp;
+}
+
+export interface LeadershipAssignment {
+  id?: string;
+  positionId: string; // Reference to LeadershipPosition
+  memberId: string; // Reference to Member document ID
+  memberUID: string; // Firebase Auth UID of the member
+  startDate: Timestamp;
+  endDate?: Timestamp; // Optional end date for terms
+  isActive: boolean;
+  assignedBy: string; // UID of admin who assigned
+  assignedAt: Timestamp;
+  notes?: string;
   updatedAt?: Timestamp;
 }
 

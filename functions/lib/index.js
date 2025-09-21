@@ -34,17 +34,37 @@ var __importStar = (this && this.__importStar) || (function () {
 })();
 var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteUser = exports.extendAdminRole = exports.claimAdminInvite = exports.approveInvite = exports.createAdminInvite = exports.cleanupExpiredRoles = exports.syncRolesOnSignIn = exports.revokeRole = exports.refreshClaims = exports.assignRole = exports.createMemberAccount = exports.exportMonthlyReport = exports.triggerMonthlyReport = exports.generateMonthlyReport = void 0;
+exports.sendRejectionEmail = exports.sendApprovalEmail = exports.deleteUser = exports.extendAdminRole = exports.claimAdminInvite = exports.approveInvite = exports.createAdminInvite = exports.cleanupExpiredRoles = exports.syncRolesOnSignIn = exports.revokeRole = exports.refreshClaims = exports.assignRole = exports.createMemberAccount = exports.exportMonthlyReport = exports.triggerMonthlyReport = exports.generateMonthlyReport = void 0;
 const scheduler_1 = require("firebase-functions/v2/scheduler");
 const https_1 = require("firebase-functions/v2/https");
 const identity_1 = require("firebase-functions/v2/identity");
 const functions = __importStar(require("firebase-functions"));
 const admin = __importStar(require("firebase-admin"));
+// Temporarily removed email imports to fix deployment issues
+// import { onDocumentCreated, onDocumentUpdated } from 'firebase-functions/v2/firestore';
+// import * as nodemailer from 'nodemailer';
 // Initialize Firebase Admin
 admin.initializeApp();
 const db = admin.firestore();
 // Admin initialization key from Firebase config
 const ADMIN_INIT_KEY = ((_a = functions.config().admin) === null || _a === void 0 ? void 0 : _a.init_key) || 'mdpu-admin-init-2024';
+// Email configuration temporarily disabled
+/*
+const EMAIL_CONFIG = {
+  service: 'gmail',
+  auth: {
+    user: functions.config().email?.user || 'mdpu.notifications@gmail.com',
+    pass: functions.config().email?.password || 'your-app-password'
+  }
+};
+
+const transporter = nodemailer.createTransport(EMAIL_CONFIG);
+*/
+// Email templates and functions temporarily disabled
+/*
+const EMAIL_TEMPLATES = { ... };
+async function sendEmail(to: string, template: { subject: string; html: string }) { ... }
+*/
 /**
  * Scheduled function to generate monthly financial reports
  * Runs on the 1st of each month at 9:00 AM Africa/Freetown time
@@ -831,4 +851,32 @@ exports.deleteUser = (0, https_1.onCall)(async (request) => {
         throw new https_1.HttpsError('internal', `Failed to delete user: ${error.message}`);
     }
 });
+// Temporarily disabled - complex Firestore triggers causing deployment issues
+/*
+export const onApplicationUpdated = onDocumentUpdated('applications/{applicationId}', async (event) => {
+  // Implementation temporarily disabled
+});
+*/
+// Temporarily disabled - complex Firestore triggers causing deployment issues
+/*
+export const onRoleCreated = onDocumentCreated('roles/{userId}', async (event) => {
+  // Implementation temporarily disabled
+});
+*/
+// Temporarily disabled - complex Firestore triggers causing deployment issues
+/*
+export const onLeadershipAssigned = onDocumentCreated('leadership/{assignmentId}', async (event) => {
+  // Implementation temporarily disabled
+});
+*/
+// Temporarily disabled - email functionality causing deployment issues
+/*
+export const testEmail = onCall(async (request) => {
+  // Implementation temporarily disabled
+});
+*/
+// Export real email notification functions for applicants
+var email_notifications_1 = require("./email-notifications");
+Object.defineProperty(exports, "sendApprovalEmail", { enumerable: true, get: function () { return email_notifications_1.sendApprovalEmail; } });
+Object.defineProperty(exports, "sendRejectionEmail", { enumerable: true, get: function () { return email_notifications_1.sendRejectionEmail; } });
 //# sourceMappingURL=index.js.map

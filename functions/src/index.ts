@@ -3,6 +3,9 @@ import { onRequest, onCall, HttpsError } from 'firebase-functions/v2/https';
 import { beforeUserSignedIn } from 'firebase-functions/v2/identity';
 import * as functions from 'firebase-functions';
 import * as admin from 'firebase-admin';
+// Temporarily removed email imports to fix deployment issues
+// import { onDocumentCreated, onDocumentUpdated } from 'firebase-functions/v2/firestore';
+// import * as nodemailer from 'nodemailer';
 
 // Initialize Firebase Admin
 admin.initializeApp();
@@ -11,6 +14,25 @@ const db = admin.firestore();
 
 // Admin initialization key from Firebase config
 const ADMIN_INIT_KEY = functions.config().admin?.init_key || 'mdpu-admin-init-2024';
+
+// Email configuration temporarily disabled
+/*
+const EMAIL_CONFIG = {
+  service: 'gmail',
+  auth: {
+    user: functions.config().email?.user || 'mdpu.notifications@gmail.com',
+    pass: functions.config().email?.password || 'your-app-password'
+  }
+};
+
+const transporter = nodemailer.createTransport(EMAIL_CONFIG);
+*/
+
+// Email templates and functions temporarily disabled
+/*
+const EMAIL_TEMPLATES = { ... };
+async function sendEmail(to: string, template: { subject: string; html: string }) { ... }
+*/
 
 /**
  * Scheduled function to generate monthly financial reports
@@ -950,3 +972,34 @@ export const deleteUser = onCall(async (request) => {
     throw new HttpsError('internal', `Failed to delete user: ${error.message}`);
   }
 });
+
+// Temporarily disabled - complex Firestore triggers causing deployment issues
+/*
+export const onApplicationUpdated = onDocumentUpdated('applications/{applicationId}', async (event) => {
+  // Implementation temporarily disabled
+});
+*/
+
+// Temporarily disabled - complex Firestore triggers causing deployment issues
+/*
+export const onRoleCreated = onDocumentCreated('roles/{userId}', async (event) => {
+  // Implementation temporarily disabled
+});
+*/
+
+// Temporarily disabled - complex Firestore triggers causing deployment issues
+/*
+export const onLeadershipAssigned = onDocumentCreated('leadership/{assignmentId}', async (event) => {
+  // Implementation temporarily disabled
+});
+*/
+
+// Temporarily disabled - email functionality causing deployment issues
+/*
+export const testEmail = onCall(async (request) => {
+  // Implementation temporarily disabled
+});
+*/
+
+// Export real email notification functions for applicants
+export { sendApprovalEmail, sendRejectionEmail } from './email-notifications';

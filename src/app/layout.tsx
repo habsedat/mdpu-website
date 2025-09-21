@@ -20,16 +20,16 @@ export const metadata: Metadata = {
   description: "The official website of the Mathamba Descendants Progressive Union, fostering unity, development, and community engagement among descendants of Mathamba.",
   icons: {
     icon: [
-      { url: '/favicon.ico', sizes: 'any' },
-      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
-      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' }
+      { url: '/assets/leadership/mdpu logo4.jpg', sizes: 'any' },
+      { url: '/assets/leadership/mdpu logo4.jpg', sizes: '16x16', type: 'image/jpeg' },
+      { url: '/assets/leadership/mdpu logo4.jpg', sizes: '32x32', type: 'image/jpeg' }
     ],
     apple: [
-      { url: '/apple-touch-icon.png', sizes: '180x180', type: 'image/png' }
+      { url: '/assets/leadership/mdpu logo4.jpg', sizes: '180x180', type: 'image/jpeg' }
     ],
     other: [
-      { url: '/android-chrome-192x192.png', sizes: '192x192', type: 'image/png' },
-      { url: '/android-chrome-512x512.png', sizes: '512x512', type: 'image/png' }
+      { url: '/assets/leadership/mdpu logo4.jpg', sizes: '192x192', type: 'image/jpeg' },
+      { url: '/assets/leadership/mdpu logo4.jpg', sizes: '512x512', type: 'image/jpeg' }
     ]
   },
   manifest: '/site.webmanifest'
@@ -43,10 +43,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <link rel="icon" href="/favicon.ico" sizes="any" />
-        <link rel="icon" href="/favicon-16x16.png" sizes="16x16" type="image/png" />
-        <link rel="icon" href="/favicon-32x32.png" sizes="32x32" type="image/png" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
+        <link rel="icon" href="/assets/leadership/mdpu logo4.jpg" sizes="any" />
+        <link rel="icon" href="/assets/leadership/mdpu logo4.jpg" sizes="16x16" type="image/jpeg" />
+        <link rel="icon" href="/assets/leadership/mdpu logo4.jpg" sizes="32x32" type="image/jpeg" />
+        <link rel="apple-touch-icon" href="/assets/leadership/mdpu logo4.jpg" sizes="180x180" />
         <link rel="manifest" href="/site.webmanifest" />
       </head>
       <body

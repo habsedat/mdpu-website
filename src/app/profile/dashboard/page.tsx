@@ -58,19 +58,67 @@ export default function MemberDashboard() {
 
   const loadMemberData = async () => {
     try {
-      // Load member profile from members collection
-      const membersQuery = query(
-        collection(db, 'members'), 
-        where('email', '==', user!.email)
-      );
-      const membersSnapshot = await getDocs(membersQuery);
+      console.log('Loading member data for user:', user?.email, user?.uid);
       
-      if (!membersSnapshot.empty) {
-        const doc = membersSnapshot.docs[0];
+      // Try multiple approaches to find member data
+      let memberDoc = null;
+      
+      // Method 1: Try to find by email
+      try {
+        const membersQuery = query(
+          collection(db, 'members'), 
+          where('email', '==', user!.email)
+        );
+        const membersSnapshot = await getDocs(membersQuery);
+        
+        if (!membersSnapshot.empty) {
+          memberDoc = membersSnapshot.docs[0];
+          console.log('Found member by email:', memberDoc.id);
+        }
+      } catch (emailQueryError) {
+        console.log('Email query failed, trying UID query...');
+      }
+      
+      // Method 2: Try to find by UID (if document ID matches UID)
+      if (!memberDoc) {
+        try {
+          const memberDocRef = doc(db, 'members', user!.uid);
+          const memberSnapshot = await getDoc(memberDocRef);
+          if (memberSnapshot.exists()) {
+            memberDoc = memberSnapshot;
+            console.log('Found member by UID:', memberDoc.id);
+          }
+        } catch (uidQueryError) {
+          console.log('UID query failed...');
+        }
+      }
+      
+      // Method 3: Try to find by uid field
+      if (!memberDoc) {
+        try {
+          const membersQuery = query(
+            collection(db, 'members'), 
+            where('uid', '==', user!.uid)
+          );
+          const membersSnapshot = await getDocs(membersQuery);
+          
+          if (!membersSnapshot.empty) {
+            memberDoc = membersSnapshot.docs[0];
+            console.log('Found member by uid field:', memberDoc.id);
+          }
+        } catch (uidFieldQueryError) {
+          console.log('UID field query failed...');
+        }
+      }
+      
+      if (memberDoc) {
         setMemberData({ 
-          ...doc.data(), 
-          id: doc.id 
+          ...memberDoc.data(), 
+          id: memberDoc.id 
         });
+        console.log('Member data loaded successfully');
+      } else {
+        console.log('No member document found for user');
       }
 
       // Load private profile if exists
@@ -79,17 +127,40 @@ export default function MemberDashboard() {
         setProfileData(profileDoc.data());
       }
 
-      // Load user's payments
-      const paymentsQuery = query(
-        collection(db, 'payments'), 
-        where('email', '==', user!.email)
-      );
-      const paymentsSnapshot = await getDocs(paymentsQuery);
-      const paymentsData = paymentsSnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
-      setPayments(paymentsData);
+      // Load user's payments with error handling
+      try {
+        console.log('Loading payments for user...');
+        const paymentsQuery = query(
+          collection(db, 'payments'), 
+          where('email', '==', user!.email)
+        );
+        const paymentsSnapshot = await getDocs(paymentsQuery);
+        const paymentsData = paymentsSnapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        setPayments(paymentsData);
+        console.log('Payments loaded successfully:', paymentsData.length);
+      } catch (paymentsError) {
+        console.log('Failed to load payments, trying alternative query...');
+        try {
+          // Try querying by UID instead
+          const paymentsQuery2 = query(
+            collection(db, 'payments'), 
+            where('uid', '==', user!.uid)
+          );
+          const paymentsSnapshot2 = await getDocs(paymentsQuery2);
+          const paymentsData2 = paymentsSnapshot2.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data()
+          }));
+          setPayments(paymentsData2);
+          console.log('Payments loaded via UID query:', paymentsData2.length);
+        } catch (paymentsError2) {
+          console.log('Could not load payments, setting empty array');
+          setPayments([]);
+        }
+      }
 
     } catch (error) {
       console.error('Error loading member data:', error);
@@ -220,28 +291,16 @@ export default function MemberDashboard() {
               </div>
             </div>
             
-            <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-              {/* Home Button */}
-              <Button asChild variant="outline">
-                <Link href="/">
-                  <Home className="w-4 h-4 mr-2" />
-                  Home
-                </Link>
-              </Button>
-              
+            <div className="flex justify-center sm:justify-end w-full sm:w-auto">
               {/* Admin Dashboard Button - Only for Admins */}
               {isAdmin && (
-                <Button asChild className="bg-purple-600 hover:bg-purple-700">
+                <Button asChild className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
                   <Link href="/admin">
                     <Shield className="w-4 h-4 mr-2" />
-                    Admin Dashboard
+                    <span className="font-semibold">Admin Dashboard</span>
                   </Link>
                 </Button>
               )}
-              
-              <Button onClick={logout} variant="outline">
-                Sign Out
-              </Button>
             </div>
           </div>
 

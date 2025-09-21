@@ -1,9 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { collection, query, orderBy, getDocs } from 'firebase/firestore';
+import { collection, query, orderBy, getDocs, where } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
-import { Member } from '@/types/firestore';
+import { Member, LeadershipAssignment } from '@/types/firestore';
 import { LeadershipRoleCard } from "@/components/ui/custom/LeadershipRoleCard";
 
 interface DynamicLeadershipProps {
@@ -11,49 +11,95 @@ interface DynamicLeadershipProps {
 }
 
 export function DynamicLeadership({ category }: DynamicLeadershipProps) {
-  const [members, setMembers] = useState<Member[]>([]);
+  const [leaders, setLeaders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadMembers();
+    loadLeadership();
   }, [category]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  const loadMembers = async () => {
+  const loadLeadership = async () => {
     try {
+      console.log('Loading leadership for category:', category);
+      
+      // Load active leadership assignments - simplified query to avoid index issues
+      const leadershipQuery = query(
+        collection(db, 'leadership'), 
+        where('isActive', '==', true)
+      );
+      const leadershipSnapshot = await getDocs(leadershipQuery);
+      const leadershipData = leadershipSnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      })) as LeadershipAssignment[];
+      
+      console.log('Leadership assignments found:', leadershipData.length, leadershipData);
+
+      // Load all members
       const membersQuery = query(collection(db, 'members'), orderBy('fullName'));
       const membersSnapshot = await getDocs(membersQuery);
-      const allMembers = membersSnapshot.docs.map(doc => ({
-        uid: doc.id,
+      const membersData = membersSnapshot.docs.map(doc => ({
+        id: doc.id,
+        uid: doc.data().uid || doc.id,
         ...doc.data()
       })) as Member[];
-
-      // Filter based on category
-      let filteredMembers: Member[] = [];
       
-      switch (category) {
-        case 'executive':
-          filteredMembers = allMembers.filter(member => 
-            member.role && ['Chairman', 'Vice President', 'Secretary General', 'DP Secretary General', 'Treasurer'].includes(member.role)
-          );
-          break;
-        case 'board':
-          filteredMembers = allMembers.filter(member => 
-            member.role && member.role.includes('Board Member')
-          );
-          break;
-        case 'chapter':
-          filteredMembers = allMembers.filter(member => 
-            member.role && member.role.includes('Chapter President')
-          );
-          break;
-      }
+      console.log('Members found:', membersData.length);
 
-      setMembers(filteredMembers);
+      // Combine leadership assignments with member data and filter by category
+      const leadersWithMemberData = leadershipData
+        .map(assignment => {
+          const member = membersData.find(m => m.id === assignment.memberId);
+          if (!member) return null;
+          
+          const positionCategory = getPositionCategory(assignment.positionId);
+          if (positionCategory !== category) return null;
+          
+          return {
+            ...member,
+            role: assignment.positionId,
+            assignedAt: assignment.assignedAt
+          };
+        })
+        .filter((leader): leader is NonNullable<typeof leader> => leader !== null)
+        .sort((a, b) => getPositionOrder(a.role) - getPositionOrder(b.role));
+
+      console.log(`Leaders for ${category} category:`, leadersWithMemberData);
+      setLeaders(leadersWithMemberData);
     } catch (error) {
-      console.error('Error loading members:', error);
+      console.error('Error loading leadership:', error);
     } finally {
       setLoading(false);
     }
+  };
+
+  const getPositionCategory = (position: string) => {
+    const executivePositions = ['Chairman', 'Vice President', 'Secretary General', 'DP Secretary General', 'Treasurer'];
+    const boardPositions = ['Board Member - Finance', 'Board Member - Projects', 'Board Member - Community Relations', 'Board Member - Youth Affairs'];
+    
+    if (executivePositions.includes(position)) return 'executive';
+    if (boardPositions.includes(position) || position.includes('Board Member')) return 'board';
+    if (position.includes('Chapter President')) return 'chapter';
+    return 'other';
+  };
+
+  const getPositionOrder = (position: string) => {
+    const positionOrders: { [key: string]: number } = {
+      'Chairman': 1,
+      'Vice President': 2,
+      'Secretary General': 3,
+      'DP Secretary General': 4,
+      'Treasurer': 5,
+      'Board Member - Finance': 10,
+      'Board Member - Projects': 11,
+      'Board Member - Community Relations': 12,
+      'Board Member - Youth Affairs': 13,
+      'Chapter President - USA': 20,
+      'Chapter President - Europe': 21,
+      'Chapter President - Canada': 22,
+      'Chapter President - Cameroon': 23,
+    };
+    return positionOrders[position] || 999;
   };
 
   if (loading) {
@@ -70,12 +116,12 @@ export function DynamicLeadership({ category }: DynamicLeadershipProps) {
     );
   }
 
-  if (members.length === 0) {
+  if (leaders.length === 0) {
     return (
       <div className="text-center py-8">
-        <p className="text-gray-600">No {category} members found.</p>
+        <p className="text-gray-600">No {category} leadership positions assigned.</p>
         <p className="text-sm text-gray-500 mt-2">
-          Leadership data will be populated by administrators.
+          Leadership positions will be assigned by administrators.
         </p>
       </div>
     );
@@ -85,15 +131,15 @@ export function DynamicLeadership({ category }: DynamicLeadershipProps) {
 
   return (
     <div className={`grid grid-cols-1 md:grid-cols-2 ${gridCols} gap-8`}>
-      {members.map((member) => (
+      {leaders.map((leader) => (
         <LeadershipRoleCard 
-          key={member.uid} 
-          name={member.fullName}
-          position={member.role || ''}
-          image={member.image || member.avatarUrl}
-          location={member.location || member.chapter}
-          term={member.term}
-          bio={member.bio}
+          key={leader.uid} 
+          name={leader.fullName}
+          position={leader.role || ''}
+          image={leader.profilePictureURL || leader.image || leader.avatarUrl}
+          location={leader.location || leader.chapter}
+          term={leader.term}
+          bio={leader.bio}
         />
       ))}
     </div>

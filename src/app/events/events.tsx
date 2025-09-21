@@ -1,11 +1,18 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import { PageHero } from "@/components/ui/custom/PageHero";
 import { Section } from "@/components/ui/custom/Section";
 import { EventCard } from "@/components/ui/custom/EventCard";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Calendar, Clock, MapPin, Users, ArrowRight } from "lucide-react";
+import { collection, query, where, orderBy, getDocs } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+import { Event } from '@/types/firestore';
 import "./upcoming-events.css";
 import Link from "next/link";
+import { DynamicEvents } from "./dynamic-events";
 
 export const metadata = {
   title: "Events - MDPU",
@@ -210,11 +217,7 @@ export default function Events() {
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {upcomingEvents.map((event) => (
-              <EventCard key={event.slug} {...event} />
-            ))}
-          </div>
+          <DynamicEvents />
         </div>
       </Section>
 

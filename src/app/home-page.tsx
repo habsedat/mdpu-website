@@ -96,7 +96,7 @@ export default function HomePage() {
                   Join Our Union
                 </Link>
               </Button>
-              <Button asChild size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-emerald-700 font-semibold px-8 py-4 text-lg">
+              <Button asChild size="lg" className="bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white font-semibold px-8 py-4 text-lg shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300">
                 <Link href="/donate">
                   <Heart className="w-5 h-5 mr-2" />
                   Support Our Mission
