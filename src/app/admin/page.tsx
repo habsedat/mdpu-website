@@ -11,12 +11,12 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
-import { collection, query, orderBy, getDocs, doc, updateDoc, deleteDoc, Timestamp } from 'firebase/firestore';
+import { collection, query, orderBy, getDocs, doc, updateDoc, deleteDoc, Timestamp, getDoc, setDoc } from 'firebase/firestore';
 import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage';
 import { httpsCallable } from 'firebase/functions';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { db, functions, auth, storage } from '@/lib/firebase';
-import { Application, Member, Project, Event, Payment, MonthlyReport, Document, LeadershipPosition, LeadershipAssignment, Media, ProjectStatus, NewsPost, NewsCategory, NewsStatus } from '@/types/firestore';
+import { Application, Member, Project, Event, Payment, MonthlyReport, Document, LeadershipPosition, LeadershipAssignment, Media, ProjectStatus, NewsPost, NewsCategory, NewsStatus, ContactInfo } from '@/types/firestore';
 import { 
   Users, 
   DollarSign, 
@@ -38,7 +38,12 @@ import {
   UserCheck,
   UserMinus,
   Search,
-  Play
+  Play,
+  Phone,
+  Mail,
+  MapPin,
+  Clock,
+  RefreshCw
 } from 'lucide-react';
 import { addDoc } from 'firebase/firestore';
 
@@ -141,6 +146,7 @@ export default function AdminDashboard() {
   const [payments, setPayments] = useState<Payment[]>([]);
   const [reports, setReports] = useState<MonthlyReport[]>([]);
   const [documents, setDocuments] = useState<Document[]>([]);
+  const [contactInfo, setContactInfo] = useState<ContactInfo | null>(null);
   const [documentTitle, setDocumentTitle] = useState('');
   const [uploadingDocument, setUploadingDocument] = useState(false);
   const [leadershipPositions, setLeadershipPositions] = useState<LeadershipPosition[]>([]);
@@ -159,6 +165,10 @@ export default function AdminDashboard() {
   // Event management states
   const [showAddEventForm, setShowAddEventForm] = useState(false);
   const [editingEvent, setEditingEvent] = useState<Event | null>(null);
+  
+  // Contact management states
+  const [editingContact, setEditingContact] = useState(false);
+  const [updatingContact, setUpdatingContact] = useState(false);
   const [eventThumbnail, setEventThumbnail] = useState<string | null>(null);
   const [uploadingThumbnail, setUploadingThumbnail] = useState(false);
   const [newEvent, setNewEvent] = useState({
@@ -226,6 +236,7 @@ export default function AdminDashboard() {
       loadAdminData();
     }
   }, [user, isAdmin, loading]);
+
 
   const loadAdminData = async () => {
     try {
@@ -316,6 +327,45 @@ export default function AdminDashboard() {
       })) as NewsPost[];
       console.log('News posts loaded:', newsData.length, newsData);
       setNewsItems(newsData);
+
+      // Load contact information - ALWAYS ENSURE IT EXISTS
+      console.log('🔍 Loading contact information...');
+      try {
+        const contactDoc = await getDoc(doc(db, 'settings', 'contact'));
+        if (contactDoc.exists()) {
+          const data = contactDoc.data() as ContactInfo;
+          setContactInfo(data);
+          console.log('✅ Contact info loaded from Firestore:', data);
+        } else {
+          console.log('📝 No contact info found, creating default...');
+          // Create default contact info if none exists
+          const defaultContact: ContactInfo = {
+            email: 'info@mdpu.org',
+            phone: '+232 123 456 789',
+            address: '19n Thompson Bay,\noff Wilkinson Road,\nFreetown, Sierra Leone',
+            officeHours: 'Monday - Friday: 9:00 AM - 5:00 PM\nSaturday: 9:00 AM - 2:00 PM\nSunday: Closed',
+            updatedAt: Timestamp.now(),
+            updatedBy: user?.uid || 'system'
+          };
+          
+          // Save default to Firestore so it's available for editing
+          await setDoc(doc(db, 'settings', 'contact'), defaultContact);
+          setContactInfo(defaultContact);
+          console.log('✅ Created and saved default contact info to Firestore:', defaultContact);
+        }
+      } catch (contactError) {
+        console.error('❌ Error with contact info:', contactError);
+        // Still set default contact info even if Firestore fails
+        const fallbackContact: ContactInfo = {
+          email: 'info@mdpu.org',
+          phone: '+232 123 456 789',
+          address: '19n Thompson Bay,\noff Wilkinson Road,\nFreetown, Sierra Leone',
+          officeHours: 'Monday - Friday: 9:00 AM - 5:00 PM\nSaturday: 9:00 AM - 2:00 PM\nSunday: Closed',
+          updatedAt: Timestamp.now(),
+          updatedBy: user?.uid || 'system'
+        };
+        setContactInfo(fallbackContact);
+      }
 
     } catch (error) {
       console.error('Error loading admin data:', error);
@@ -1147,6 +1197,66 @@ export default function AdminDashboard() {
     });
   };
 
+  // Contact Management Functions
+  const initializeContactInfo = async () => {
+    if (!user) {
+      alert('❌ Please ensure you are logged in as an admin');
+      return;
+    }
+    
+    try {
+      console.log('🔄 Force initializing contact info...');
+      
+      const defaultContact: ContactInfo = {
+        email: 'info@mdpu.org',
+        phone: '+232 123 456 789',
+        address: '19n Thompson Bay,\noff Wilkinson Road,\nFreetown, Sierra Leone',
+        officeHours: 'Monday - Friday: 9:00 AM - 5:00 PM\nSaturday: 9:00 AM - 2:00 PM\nSunday: Closed',
+        updatedAt: Timestamp.now(),
+        updatedBy: user.uid
+      };
+      
+      console.log('💾 Saving contact info to Firestore...');
+      await setDoc(doc(db, 'settings', 'contact'), defaultContact);
+      setContactInfo(defaultContact);
+      console.log('✅ Contact info initialized and saved successfully:', defaultContact);
+      alert('✅ Contact information initialized successfully!');
+      
+    } catch (error) {
+      console.error('❌ Error initializing contact info:', error);
+      alert('❌ Error initializing contact information. Please check console for details.');
+    }
+  };
+
+  const handleUpdateContact = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!contactInfo || !user) return;
+    
+    try {
+      setUpdatingContact(true);
+      
+      const updatedContact: ContactInfo = {
+        ...contactInfo,
+        updatedAt: Timestamp.now(),
+        updatedBy: user.uid
+      };
+      
+      console.log('💾 Saving contact info:', updatedContact);
+      await setDoc(doc(db, 'settings', 'contact'), updatedContact);
+      setContactInfo(updatedContact);
+      setEditingContact(false);
+      alert('✅ Contact information updated successfully!');
+      console.log('✅ Contact info saved to Firestore');
+      
+    } catch (error) {
+      console.error('❌ Error updating contact info:', error);
+      alert('❌ Error updating contact information. Please try again.');
+    } finally {
+      setUpdatingContact(false);
+    }
+  };
+
   const handleNewsImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
@@ -1962,7 +2072,7 @@ Link: https://console.firebase.google.com/project/mdpu-website/authentication/us
 
           {/* Main Content Tabs */}
           <Tabs defaultValue="applications" className="space-y-3 sm:space-y-4 lg:space-y-6">
-            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 h-auto gap-2 p-2 bg-gradient-to-r from-slate-100 to-gray-100 rounded-xl shadow-lg">
+            <TabsList className="grid w-full grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 h-auto gap-2 p-2 bg-gradient-to-r from-slate-100 to-gray-100 rounded-xl shadow-lg">
               <TabsTrigger 
                 value="applications" 
                 className="relative text-xs sm:text-sm px-3 sm:px-4 py-3 sm:py-4 font-semibold rounded-lg transition-all duration-300 bg-white hover:bg-blue-50 hover:text-blue-700 hover:shadow-md data-[state=active]:bg-gradient-to-r data-[state=active]:from-blue-600 data-[state=active]:to-blue-700 data-[state=active]:text-white data-[state=active]:shadow-xl transform hover:scale-105 data-[state=active]:scale-105"
@@ -2011,6 +2121,16 @@ Link: https://console.firebase.google.com/project/mdpu-website/authentication/us
                   <DollarSign className="w-3 h-3 sm:w-4 sm:h-4" />
                   <span className="hidden sm:inline">Finance</span>
                   <span className="sm:hidden">Money</span>
+                </span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="contact" 
+                className="relative text-xs sm:text-sm px-3 sm:px-4 py-3 sm:py-4 font-semibold rounded-lg transition-all duration-300 bg-white hover:bg-teal-50 hover:text-teal-700 hover:shadow-md data-[state=active]:bg-gradient-to-r data-[state=active]:from-teal-600 data-[state=active]:to-teal-700 data-[state=active]:text-white data-[state=active]:shadow-xl transform hover:scale-105 data-[state=active]:scale-105"
+              >
+                <span className="flex items-center justify-center gap-1 sm:gap-2">
+                  <Phone className="w-3 h-3 sm:w-4 sm:h-4" />
+                  <span className="hidden sm:inline">Contact</span>
+                  <span className="sm:hidden">Info</span>
                 </span>
               </TabsTrigger>
             </TabsList>
@@ -3608,7 +3728,7 @@ Link: https://console.firebase.google.com/project/mdpu-website/authentication/us
                                           src={videoSrc}
                                           videoName={videoName}
                                           index={0}
-                                          className="h-32 w-full"
+                                          className="h-48 w-full"
                                         />
                                       );
                                     })()}
@@ -4128,6 +4248,233 @@ Link: https://console.firebase.google.com/project/mdpu-website/authentication/us
                   </Card>
                 )}
               </div>
+            </TabsContent>
+
+            {/* Contact Tab */}
+            <TabsContent value="contact">
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center justify-between">
+                    📞 Contact Information Management
+                    <div className="flex gap-2">
+                      {!contactInfo && (
+                        <Button 
+                          size="sm" 
+                          onClick={initializeContactInfo}
+                          className="bg-blue-600 hover:bg-blue-700"
+                        >
+                          <Plus className="w-4 h-4 mr-1" />
+                          Initialize Contact Info
+                        </Button>
+                      )}
+                      <Button 
+                        size="sm" 
+                        onClick={initializeContactInfo}
+                        variant="outline"
+                        className="border-teal-200 text-teal-700 hover:bg-teal-50"
+                      >
+                        <RefreshCw className="w-4 h-4 mr-1" />
+                        Refresh
+                      </Button>
+                      <Button 
+                        size="sm" 
+                        onClick={() => setEditingContact(!editingContact)}
+                        className="bg-teal-600 hover:bg-teal-700"
+                        disabled={!contactInfo}
+                      >
+                        {editingContact ? (
+                          <>
+                            <X className="w-4 h-4 mr-1" />
+                            Cancel
+                          </>
+                        ) : (
+                          <>
+                            <Edit className="w-4 h-4 mr-1" />
+                            Edit Contact Info
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  </CardTitle>
+                  <CardDescription>
+                    Manage official contact information displayed on the public contact page.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {contactInfo ? (
+                    editingContact ? (
+                      /* Edit Form */
+                      <form onSubmit={handleUpdateContact} className="space-y-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                              Official Email *
+                            </label>
+                            <div className="relative">
+                              <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                              <Input
+                                type="email"
+                                value={contactInfo.email}
+                                onChange={(e) => setContactInfo({...contactInfo, email: e.target.value})}
+                                placeholder="info@mdpu.org"
+                                className="pl-10"
+                                required
+                              />
+                            </div>
+                          </div>
+
+                          <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                              Official Phone *
+                            </label>
+                            <div className="relative">
+                              <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                              <Input
+                                type="tel"
+                                value={contactInfo.phone}
+                                onChange={(e) => setContactInfo({...contactInfo, phone: e.target.value})}
+                                placeholder="+232 123 456 789"
+                                className="pl-10"
+                                required
+                              />
+                            </div>
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Office Address *
+                          </label>
+                          <div className="relative">
+                            <MapPin className="absolute left-3 top-3 text-gray-400 w-4 h-4" />
+                            <Textarea
+                              value={contactInfo.address}
+                              onChange={(e) => setContactInfo({...contactInfo, address: e.target.value})}
+                              placeholder="19n Thompson Bay,&#10;off Wilkinson Road,&#10;Freetown, Sierra Leone"
+                              className="pl-10 min-h-[100px]"
+                              required
+                            />
+                          </div>
+                          <p className="text-xs text-gray-500 mt-1">Use line breaks for multi-line addresses</p>
+                        </div>
+
+                        <div>
+                          <label className="block text-sm font-medium text-gray-700 mb-2">
+                            Office Hours (Optional)
+                          </label>
+                          <Textarea
+                            value={contactInfo.officeHours || ''}
+                            onChange={(e) => setContactInfo({...contactInfo, officeHours: e.target.value})}
+                            placeholder="Monday - Friday: 9:00 AM - 5:00 PM&#10;Saturday: 9:00 AM - 2:00 PM&#10;Sunday: Closed"
+                            className="min-h-[80px]"
+                          />
+                        </div>
+
+                        <div className="flex gap-3 pt-4">
+                          <Button 
+                            type="submit" 
+                            className="bg-teal-600 hover:bg-teal-700"
+                            disabled={updatingContact}
+                          >
+                            {updatingContact ? (
+                              <>
+                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                                Updating...
+                              </>
+                            ) : (
+                              <>
+                                <Check className="w-4 h-4 mr-2" />
+                                Update Contact Info
+                              </>
+                            )}
+                          </Button>
+                          <Button 
+                            type="button" 
+                            variant="outline" 
+                            onClick={() => setEditingContact(false)}
+                          >
+                            Cancel
+                          </Button>
+                        </div>
+                      </form>
+                    ) : (
+                      /* Display Current Info */
+                      <div className="space-y-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <Card className="bg-gradient-to-br from-blue-50 to-indigo-50 border-blue-200">
+                            <CardContent className="pt-6">
+                              <div className="flex items-start space-x-4">
+                                <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                  <Mail className="w-5 h-5 text-white" />
+                                </div>
+                                <div>
+                                  <h3 className="font-semibold text-blue-900 mb-1">Official Email</h3>
+                                  <p className="text-blue-700 font-medium">{contactInfo.email}</p>
+                                </div>
+                              </div>
+                            </CardContent>
+                          </Card>
+
+                          <Card className="bg-gradient-to-br from-green-50 to-emerald-50 border-green-200">
+                            <CardContent className="pt-6">
+                              <div className="flex items-start space-x-4">
+                                <div className="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                  <Phone className="w-5 h-5 text-white" />
+                                </div>
+                                <div>
+                                  <h3 className="font-semibold text-green-900 mb-1">Official Phone</h3>
+                                  <p className="text-green-700 font-medium">{contactInfo.phone}</p>
+                                </div>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        </div>
+
+                        <Card className="bg-gradient-to-br from-purple-50 to-pink-50 border-purple-200">
+                          <CardContent className="pt-6">
+                            <div className="flex items-start space-x-4">
+                              <div className="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                <MapPin className="w-5 h-5 text-white" />
+                              </div>
+                              <div>
+                                <h3 className="font-semibold text-purple-900 mb-1">Office Address</h3>
+                                <p className="text-purple-700 whitespace-pre-line">{contactInfo.address}</p>
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+
+                        {contactInfo.officeHours && (
+                          <Card className="bg-gradient-to-br from-orange-50 to-red-50 border-orange-200">
+                            <CardContent className="pt-6">
+                              <div className="flex items-start space-x-4">
+                                <div className="w-10 h-10 bg-orange-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                  <Clock className="w-5 h-5 text-white" />
+                                </div>
+                                <div>
+                                  <h3 className="font-semibold text-orange-900 mb-1">Office Hours</h3>
+                                  <p className="text-orange-700 whitespace-pre-line">{contactInfo.officeHours}</p>
+                                </div>
+                              </div>
+                            </CardContent>
+                          </Card>
+                        )}
+
+                        {contactInfo.updatedAt && (
+                          <div className="text-sm text-gray-500 text-center p-4 bg-gray-50 rounded-lg">
+                            Last updated: {contactInfo.updatedAt.toDate().toLocaleString()}
+                          </div>
+                        )}
+                      </div>
+                    )
+                  ) : (
+                    <div className="text-center py-8">
+                      <Phone className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+                      <p className="text-gray-600">Loading contact information...</p>
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
             </TabsContent>
           </Tabs>
         </div>

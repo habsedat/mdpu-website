@@ -1,9 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
+import { doc, getDoc, onSnapshot } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+import { ContactInfo } from '@/types/firestore';
 import { PageHero } from "@/components/ui/custom/PageHero";
 import { Section } from "@/components/ui/custom/Section";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -36,6 +39,8 @@ const subjects = [
 
 export default function Contact() {
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [contactInfo, setContactInfo] = useState<ContactInfo | null>(null);
+  const [loading, setLoading] = useState(true);
   
   const form = useForm<ContactFormData>({
     resolver: zodResolver(contactFormSchema),
@@ -46,6 +51,50 @@ export default function Contact() {
       message: "",
     },
   });
+
+  // Load contact information from Firestore with real-time updates
+  useEffect(() => {
+    console.log('🔍 Setting up real-time contact info listener...');
+    
+    const unsubscribe = onSnapshot(
+      doc(db, 'settings', 'contact'),
+      (contactDoc) => {
+        if (contactDoc.exists()) {
+          const data = contactDoc.data() as ContactInfo;
+          console.log('✅ Contact info updated from Firestore:', data);
+          setContactInfo(data);
+        } else {
+          console.log('⚠️ No contact info found in Firestore, using defaults');
+          // Set default contact info if none exists
+          setContactInfo({
+            email: 'info@mdpu.org',
+            phone: '+232 123 456 789',
+            address: '19n Thompson Bay,\noff Wilkinson Road,\nFreetown, Sierra Leone',
+            officeHours: 'Monday - Friday: 9:00 AM - 5:00 PM\nSaturday: 9:00 AM - 2:00 PM\nSunday: Closed',
+            updatedAt: new Date() as any,
+            updatedBy: 'system'
+          });
+        }
+        setLoading(false);
+      },
+      (error) => {
+        console.error('❌ Error loading contact info:', error);
+        // Fallback to default values
+        setContactInfo({
+          email: 'info@mdpu.org',
+          phone: '+232 123 456 789',
+          address: '19n Thompson Bay,\noff Wilkinson Road,\nFreetown, Sierra Leone',
+          officeHours: 'Monday - Friday: 9:00 AM - 5:00 PM\nSaturday: 9:00 AM - 2:00 PM\nSunday: Closed',
+          updatedAt: new Date() as any,
+          updatedBy: 'system'
+        });
+        setLoading(false);
+      }
+    );
+
+    // Cleanup subscription on unmount
+    return () => unsubscribe();
+  }, []);
 
   const onSubmit = async (data: ContactFormData) => {
     try {
@@ -242,77 +291,85 @@ export default function Contact() {
               </div>
 
               <div className="space-y-6">
-                <Card>
-                  <CardContent className="pt-6">
-                    <div className="flex items-start space-x-4">
-                      <div className="w-10 h-10 bg-brand-forest rounded-full flex items-center justify-center flex-shrink-0">
-                        <MapPin className="w-5 h-5 text-white" />
-                      </div>
-                      <div>
-                        <h3 className="font-semibold text-brand-charcoal mb-1">Our Office</h3>
-                        <p className="text-gray-600 text-sm">
-                          19n Thompson Bay,<br />
-                          off Wilkinson Road,<br />
-                          Freetown, Sierra Leone
-                        </p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                {loading ? (
+                  <div className="space-y-6">
+                    <div className="h-20 bg-gray-200 rounded-lg animate-pulse"></div>
+                    <div className="h-20 bg-gray-200 rounded-lg animate-pulse"></div>
+                    <div className="h-20 bg-gray-200 rounded-lg animate-pulse"></div>
+                  </div>
+                ) : contactInfo ? (
+                  <>
+                    <Card>
+                      <CardContent className="pt-6">
+                        <div className="flex items-start space-x-4">
+                          <div className="w-10 h-10 bg-brand-forest rounded-full flex items-center justify-center flex-shrink-0">
+                            <MapPin className="w-5 h-5 text-white" />
+                          </div>
+                          <div>
+                            <h3 className="font-semibold text-brand-charcoal mb-1">Our Office</h3>
+                            <p className="text-gray-600 text-sm whitespace-pre-line">
+                              {contactInfo.address}
+                            </p>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
 
-                <Card>
-                  <CardContent className="pt-6">
-                    <div className="flex items-start space-x-4">
-                      <div className="w-10 h-10 bg-brand-forest rounded-full flex items-center justify-center flex-shrink-0">
-                        <Phone className="w-5 h-5 text-white" />
-                      </div>
-                      <div>
-                        <h3 className="font-semibold text-brand-charcoal mb-1">Phone</h3>
-                        <p className="text-gray-600 text-sm">
-                          <a href="tel:+232123456789" className="hover:text-brand-forest transition-colors">
-                            +232 123 456 789
-                          </a>
-                        </p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                    <Card>
+                      <CardContent className="pt-6">
+                        <div className="flex items-start space-x-4">
+                          <div className="w-10 h-10 bg-brand-forest rounded-full flex items-center justify-center flex-shrink-0">
+                            <Phone className="w-5 h-5 text-white" />
+                          </div>
+                          <div>
+                            <h3 className="font-semibold text-brand-charcoal mb-1">Phone</h3>
+                            <p className="text-gray-600 text-sm">
+                              <a href={`tel:${contactInfo.phone.replace(/\s/g, '')}`} className="hover:text-brand-forest transition-colors">
+                                {contactInfo.phone}
+                              </a>
+                            </p>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
 
-                <Card>
-                  <CardContent className="pt-6">
-                    <div className="flex items-start space-x-4">
-                      <div className="w-10 h-10 bg-brand-forest rounded-full flex items-center justify-center flex-shrink-0">
-                        <Mail className="w-5 h-5 text-white" />
-                      </div>
-                      <div>
-                        <h3 className="font-semibold text-brand-charcoal mb-1">Email</h3>
-                        <p className="text-gray-600 text-sm">
-                          <a href="mailto:info@mdpu.org" className="hover:text-brand-forest transition-colors">
-                            info@mdpu.org
-                          </a>
-                        </p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                    <Card>
+                      <CardContent className="pt-6">
+                        <div className="flex items-start space-x-4">
+                          <div className="w-10 h-10 bg-brand-forest rounded-full flex items-center justify-center flex-shrink-0">
+                            <Mail className="w-5 h-5 text-white" />
+                          </div>
+                          <div>
+                            <h3 className="font-semibold text-brand-charcoal mb-1">Email</h3>
+                            <p className="text-gray-600 text-sm">
+                              <a href={`mailto:${contactInfo.email}`} className="hover:text-brand-forest transition-colors">
+                                {contactInfo.email}
+                              </a>
+                            </p>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </>
+                ) : null}
 
-                <Card>
-                  <CardContent className="pt-6">
-                    <div className="flex items-start space-x-4">
-                      <div className="w-10 h-10 bg-brand-forest rounded-full flex items-center justify-center flex-shrink-0">
-                        <Clock className="w-5 h-5 text-white" />
+                {contactInfo?.officeHours && (
+                  <Card>
+                    <CardContent className="pt-6">
+                      <div className="flex items-start space-x-4">
+                        <div className="w-10 h-10 bg-brand-forest rounded-full flex items-center justify-center flex-shrink-0">
+                          <Clock className="w-5 h-5 text-white" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-brand-charcoal mb-1">Office Hours</h3>
+                          <p className="text-gray-600 text-sm whitespace-pre-line">
+                            {contactInfo.officeHours}
+                          </p>
+                        </div>
                       </div>
-                      <div>
-                        <h3 className="font-semibold text-brand-charcoal mb-1">Office Hours</h3>
-                        <p className="text-gray-600 text-sm">
-                          Monday - Friday: 9:00 AM - 5:00 PM<br />
-                          Saturday: 10:00 AM - 2:00 PM<br />
-                          Sunday: Closed
-                        </p>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
+                    </CardContent>
+                  </Card>
+                )}
               </div>
             </div>
           </div>

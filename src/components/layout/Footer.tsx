@@ -1,7 +1,53 @@
+"use client";
+
 import Link from "next/link";
+import { useState, useEffect } from "react";
+import { doc, onSnapshot } from 'firebase/firestore';
+import { db } from '@/lib/firebase';
+import { ContactInfo } from '@/types/firestore';
 import { Users, Mail, Phone, MapPin, Heart } from "lucide-react";
 
 export function Footer() {
+  const [contactInfo, setContactInfo] = useState<ContactInfo | null>(null);
+
+  // Load contact information with real-time updates
+  useEffect(() => {
+    console.log('📞 Footer: Setting up contact info listener...');
+    
+    const unsubscribe = onSnapshot(
+      doc(db, 'settings', 'contact'),
+      (contactDoc) => {
+        if (contactDoc.exists()) {
+          const data = contactDoc.data() as ContactInfo;
+          console.log('📞 Footer: Contact info updated:', data);
+          setContactInfo(data);
+        } else {
+          console.log('📞 Footer: No contact info, using defaults');
+          setContactInfo({
+            email: 'info@mdpu.org',
+            phone: '+232 123 456 789',
+            address: '19n Thompson Bay,\noff Wilkinson Road,\nFreetown, Sierra Leone',
+            officeHours: '',
+            updatedAt: new Date() as any,
+            updatedBy: 'system'
+          });
+        }
+      },
+      (error) => {
+        console.error('📞 Footer: Error loading contact info:', error);
+        setContactInfo({
+          email: 'info@mdpu.org',
+          phone: '+232 123 456 789',
+          address: '19n Thompson Bay,\noff Wilkinson Road,\nFreetown, Sierra Leone',
+          officeHours: '',
+          updatedAt: new Date() as any,
+          updatedBy: 'system'
+        });
+      }
+    );
+
+    return () => unsubscribe();
+  }, []);
   return (
     <footer className="bg-brand-charcoal text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -55,33 +101,45 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Contact Info */}
+          {/* Contact Info - DYNAMIC FROM ADMIN */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold">Contact Us</h3>
-            <div className="space-y-3 text-sm">
-              <div className="flex items-start space-x-3">
-                <MapPin className="w-4 h-4 mt-0.5 text-brand-gold flex-shrink-0" />
-                <div>
-                  <p className="text-gray-300">
-                    19n Thompson Bay,<br />
-                    off Wilkinson Road,<br />
-                    Freetown, Sierra Leone
-                  </p>
+            {contactInfo ? (
+              <div className="space-y-3 text-sm">
+                <div className="flex items-start space-x-3">
+                  <MapPin className="w-4 h-4 mt-0.5 text-brand-gold flex-shrink-0" />
+                  <div>
+                    <p className="text-gray-300 whitespace-pre-line">
+                      {contactInfo.address}
+                    </p>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <Mail className="w-4 h-4 text-brand-gold flex-shrink-0" />
+                  <a 
+                    href={`mailto:${contactInfo.email}`} 
+                    className="text-gray-300 hover:text-brand-gold transition-colors"
+                  >
+                    {contactInfo.email}
+                  </a>
+                </div>
+                <div className="flex items-center space-x-3">
+                  <Phone className="w-4 h-4 text-brand-gold flex-shrink-0" />
+                  <a 
+                    href={`tel:${contactInfo.phone.replace(/\s/g, '')}`} 
+                    className="text-gray-300 hover:text-brand-gold transition-colors"
+                  >
+                    {contactInfo.phone}
+                  </a>
                 </div>
               </div>
-              <div className="flex items-center space-x-3">
-                <Mail className="w-4 h-4 text-brand-gold flex-shrink-0" />
-                <a href="mailto:info@mdpu.org" className="text-gray-300 hover:text-brand-gold transition-colors">
-                  info@mdpu.org
-                </a>
+            ) : (
+              <div className="space-y-3 text-sm">
+                <div className="h-4 bg-gray-600 rounded animate-pulse"></div>
+                <div className="h-4 bg-gray-600 rounded animate-pulse"></div>
+                <div className="h-4 bg-gray-600 rounded animate-pulse"></div>
               </div>
-              <div className="flex items-center space-x-3">
-                <Phone className="w-4 h-4 text-brand-gold flex-shrink-0" />
-                <a href="tel:+232123456789" className="text-gray-300 hover:text-brand-gold transition-colors">
-                  +232 123 456 789
-                </a>
-              </div>
-            </div>
+            )}
           </div>
 
           {/* Legal & Support */}

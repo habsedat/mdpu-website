@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { collection, query, getDocs, doc, updateDoc, increment, arrayUnion, arrayRemove } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { NewsPost } from '@/types/firestore';
@@ -11,6 +11,115 @@ import { Badge } from "@/components/ui/badge";
 import { Calendar, Eye, Tag, User, Play, ArrowRight, X, Search, MapPin, ThumbsUp, ThumbsDown, Heart } from "lucide-react";
 import VideoPlayer from "@/components/ui/custom/VideoPlayer";
 import { useAuth } from "@/contexts/AuthContext";
+
+// YOUTUBE-STYLE VIDEO COMPONENT WITH ASPECT RATIO DETECTION
+interface YouTubeStyleVideoProps {
+  src: string;
+  videoName: string;
+  multipleVideos?: number;
+}
+
+function YouTubeStyleVideo({ src, videoName, multipleVideos }: YouTubeStyleVideoProps) {
+  const [aspectRatio, setAspectRatio] = useState<'16:9' | '9:16' | 'unknown'>('unknown');
+  const [isLoaded, setIsLoaded] = useState(false);
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  const handleVideoLoad = () => {
+    if (videoRef.current) {
+      const video = videoRef.current;
+      const width = video.videoWidth;
+      const height = video.videoHeight;
+      
+      if (width && height) {
+        const ratio = width / height;
+        // Determine aspect ratio
+        if (ratio > 1.5) {
+          setAspectRatio('16:9'); // Landscape/Horizontal
+        } else if (ratio < 0.7) {
+          setAspectRatio('9:16'); // Portrait/Vertical
+        } else {
+          setAspectRatio('16:9'); // Default to landscape for square-ish videos
+        }
+        setIsLoaded(true);
+      }
+    }
+  };
+
+  // YouTube-style container classes based on aspect ratio
+  const getContainerClasses = () => {
+    if (!isLoaded) return "aspect-video"; // Default while loading
+    
+    switch (aspectRatio) {
+      case '16:9':
+        return "aspect-video"; // 16:9 aspect ratio (YouTube standard)
+      case '9:16':
+        return "aspect-[9/16]"; // 9:16 aspect ratio (YouTube Shorts)
+      default:
+        return "aspect-video";
+    }
+  };
+
+  const getVideoHeight = () => {
+    if (!isLoaded) return "280px";
+    
+    switch (aspectRatio) {
+      case '16:9':
+        return "280px"; // Bigger YouTube thumbnail height
+      case '9:16':
+        return "498px"; // Taller for vertical videos (280 * 16/9)
+      default:
+        return "280px";
+    }
+  };
+
+  return (
+    <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl overflow-hidden shadow-lg">
+      {/* YouTube-style header */}
+      <div className="bg-slate-700 px-4 py-2 flex items-center justify-between">
+        <div className="flex items-center space-x-2">
+          <div className="w-2 h-2 bg-red-500 rounded-full animate-pulse"></div>
+          <span className="text-white font-semibold text-sm">🎥 {videoName}</span>
+        </div>
+        {multipleVideos && multipleVideos > 1 && (
+          <span className="text-slate-300 text-xs">+{multipleVideos - 1} more</span>
+        )}
+      </div>
+      
+      {/* YouTube-style video container - FULL WIDTH */}
+      <div className="relative bg-black">
+        <div className={getContainerClasses()}>
+          <video
+            ref={videoRef}
+            src={src}
+            controls
+            preload="metadata"
+            className="w-full h-full object-contain"
+            style={{ 
+              backgroundColor: '#000',
+              maxHeight: getVideoHeight()
+            }}
+            onLoadedMetadata={handleVideoLoad}
+            onError={(e) => {
+              console.log('Video load error:', e);
+              setIsLoaded(true); // Still show the container
+            }}
+          >
+            <p className="text-white text-center py-4 text-sm">
+              Video preview unavailable
+            </p>
+          </video>
+          
+          {/* YouTube-style aspect ratio indicator */}
+          {isLoaded && (
+            <div className="absolute top-2 right-2 bg-black bg-opacity-70 text-white px-2 py-1 rounded text-xs font-bold">
+              {aspectRatio === '9:16' ? 'SHORTS' : 'HD'}
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function ProfessionalNews() {
   const [newsItems, setNewsItems] = useState<NewsPost[]>([]);
@@ -338,8 +447,8 @@ export default function ProfessionalNews() {
             </div>
           </div>
         </div>
-        <div className="max-w-7xl mx-auto px-4 py-12">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="max-w-7xl mx-auto px-2 sm:px-4 py-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
             {[...Array(6)].map((_, i) => (
               <div key={i} className="bg-white rounded-xl shadow-lg h-96 animate-pulse"></div>
             ))}
@@ -369,9 +478,9 @@ export default function ProfessionalNews() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 py-8">
         {/* Search and Filter */}
-        <div className="bg-white rounded-2xl shadow-xl p-8 mb-12 border border-slate-200">
+        <div className="bg-white rounded-2xl shadow-xl p-4 sm:p-8 mb-12 border border-slate-200">
           <div className="flex flex-col lg:flex-row gap-6">
             <div className="flex-1 relative">
               <Search className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 w-5 h-5" />
@@ -411,7 +520,7 @@ export default function ProfessionalNews() {
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
             {filteredNews.map((news) => (
               <Card key={news.id} className="overflow-hidden hover:shadow-2xl transition-all duration-500 transform hover:-translate-y-2 bg-white border-0 shadow-xl rounded-2xl">
                 {/* Featured Image */}
@@ -446,14 +555,16 @@ export default function ProfessionalNews() {
                   </div>
                 )}
                 
-                <CardHeader className="p-6">
-                  <CardTitle className="text-xl font-bold text-slate-900 line-clamp-2 leading-tight mb-3">
-                    {news.title}
-                  </CardTitle>
+                <CardHeader className="p-0">
+                  <div className="px-6 pt-4 pb-3">
+                    <CardTitle className="text-xl font-bold text-slate-900 line-clamp-2 leading-tight mb-3">
+                      {news.title}
+                    </CardTitle>
+                  </div>
 
-                  {/* VIDEO PREVIEW - RIGHT AFTER TITLE ON CARD */}
+                  {/* VIDEO PREVIEW - FULL WIDTH EDGE TO EDGE */}
                   {news.videos && news.videos.length > 0 && (
-                    <div className="mb-3">
+                    <div className="mb-0">
                       {(() => {
                         const video = news.videos[0];
                         let videoSrc = video;
@@ -473,40 +584,18 @@ export default function ProfessionalNews() {
                         }
                         
                         return (
-                          <div className="bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl overflow-hidden shadow-lg">
-                            <div className="bg-slate-700 px-4 py-2 flex items-center justify-between">
-                              <div className="flex items-center space-x-2">
-                                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                                <span className="text-white font-semibold text-sm">📹 {videoName}</span>
-                              </div>
-                              {news.videos.length > 1 && (
-                                <span className="text-slate-300 text-xs">+{news.videos.length - 1} more</span>
-                              )}
-                            </div>
-                            <div className="p-3">
-                              <video
-                                src={videoSrc}
-                                controls
-                                preload="metadata"
-                                className="w-full rounded-lg shadow-md"
-                                style={{ maxHeight: '200px', backgroundColor: '#1f2937' }}
-                                onError={(e) => {
-                                  e.currentTarget.style.display = 'block';
-                                }}
-                              >
-                                <p className="text-white text-center py-4 text-sm">
-                                  Video preview unavailable
-                                </p>
-                              </video>
-                            </div>
-                          </div>
+                          <YouTubeStyleVideo
+                            src={videoSrc}
+                            videoName={videoName}
+                            multipleVideos={news.videos.length}
+                          />
                         );
                       })()}
                     </div>
                   )}
 
                   {/* ENGAGEMENT BUTTONS - IMMEDIATELY AFTER VIDEO (Facebook Layout) */}
-                  <div className="flex items-center justify-between mb-4 px-1">
+                  <div className="flex items-center justify-between mb-4 px-6">
                     <div className="flex items-center gap-1">
                       {/* Views */}
                       <div className="flex items-center text-slate-500 text-sm mr-4">
@@ -571,48 +660,23 @@ export default function ProfessionalNews() {
                     )}
                   </div>
 
-                  <div className="text-slate-600 line-clamp-3 text-base leading-relaxed mb-4">
+                  {/* YouTube-style minimal description */}
+                  <div className="text-slate-600 text-sm line-clamp-2 mb-3 px-6">
                     {news.summary}
+                  </div>
+                  
+                  {/* YouTube-style author and date */}
+                  <div className="flex items-center justify-between text-xs text-slate-500 mb-3 px-6">
+                    <span className="font-medium">{news.authorName}</span>
+                    <span>{formatDate(news.publishedAt || news.createdAt)}</span>
                   </div>
                 </CardHeader>
                 
-                <CardContent className="px-6 pb-6">
-                  {/* Metadata */}
-                  <div className="flex flex-wrap items-center gap-4 text-sm text-slate-500 mb-4">
-                    <div className="flex items-center">
-                      <Calendar className="w-4 h-4 mr-1" />
-                      {formatDate(news.publishedAt || news.createdAt)}
-                    </div>
-                    <div className="flex items-center">
-                      <User className="w-4 h-4 mr-1" />
-                      {news.authorName}
-                    </div>
-                    {news.location && (
-                      <div className="flex items-center">
-                        <MapPin className="w-4 h-4 mr-1" />
-                        {news.location}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Tags */}
-                  {news.tags.length > 0 && (
-                    <div className="flex flex-wrap gap-2 mb-6">
-                      {news.tags.slice(0, 3).map((tag, index) => (
-                        <span key={index} className="bg-slate-100 text-slate-700 text-xs px-3 py-1 rounded-full font-medium">
-                          #{tag}
-                        </span>
-                      ))}
-                      {news.tags.length > 3 && (
-                        <span className="text-xs text-slate-500 px-2 py-1">+{news.tags.length - 3} more</span>
-                      )}
-                    </div>
-                  )}
-                  
-                  {/* Read More Button */}
+                <CardContent className="px-6 pb-4 pt-0">
+                  {/* Read More Button - YouTube style */}
                   <Button 
                     onClick={() => handleReadMore(news)}
-                    className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
+                    className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-3 rounded-xl shadow-lg hover:shadow-xl transition-all duration-300"
                   >
                     Read Full Story
                     <ArrowRight className="w-5 h-5 ml-2" />

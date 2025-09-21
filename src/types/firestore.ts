@@ -1,5 +1,16 @@
 import { Timestamp } from 'firebase/firestore';
 
+// Contact Information types
+export interface ContactInfo {
+  id?: string;
+  email: string;
+  phone: string;
+  address: string;
+  officeHours?: string;
+  updatedAt: Timestamp;
+  updatedBy: string; // Admin user ID who made the change
+}
+
 // Application types
 export type ApplicationStatus = 'pending' | 'approved' | 'rejected';
 
