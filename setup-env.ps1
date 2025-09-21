@@ -69,3 +69,4 @@ Write-Host "🔒 Security Note: .env.local is gitignored - your keys are safe!" 
 
 
 
+

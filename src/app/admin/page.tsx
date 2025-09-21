@@ -42,7 +42,7 @@ import {
 } from 'lucide-react';
 import { addDoc } from 'firebase/firestore';
 
-// SIMPLE WORKING VIDEO PREVIEW - NO MORE COMPLEXITY
+// PROFESSIONAL VIDEO DISPLAY - MATCHING PUBLIC NEWS LAYOUT
 interface AdminVideoPreviewProps {
   src: string;
   videoName: string;
@@ -51,64 +51,30 @@ interface AdminVideoPreviewProps {
 }
 
 function AdminVideoPreview({ src, videoName, index, className = '' }: AdminVideoPreviewProps) {
-  const [isPlaying, setIsPlaying] = useState(false);
-  const videoRef = useRef<HTMLVideoElement>(null);
-
-  const handlePlayClick = () => {
-    if (videoRef.current) {
-      if (isPlaying) {
-        videoRef.current.pause();
-        setIsPlaying(false);
-      } else {
-        videoRef.current.currentTime = 0;
-        videoRef.current.play();
-        setIsPlaying(true);
-      }
-    }
-  };
-
   return (
-    <div className={`relative bg-gradient-to-br from-slate-900 to-slate-800 rounded-lg overflow-hidden ${className}`}>
-      {/* SIMPLE VIDEO ELEMENT */}
-      <video
-        ref={videoRef}
-        src={src}
-        className="w-full h-full object-contain"
-        controls={isPlaying}
-        muted
-        playsInline
-        webkit-playsinline="true"
-        preload="metadata"
-        onPlay={() => setIsPlaying(true)}
-        onPause={() => setIsPlaying(false)}
-        onEnded={() => setIsPlaying(false)}
-        onLoadedData={() => {
-          // FORCE THUMBNAIL: Seek to 2 seconds immediately
-          if (videoRef.current && !isPlaying) {
-            const seekTime = videoRef.current.duration > 2 ? 2 : videoRef.current.duration / 2;
-            videoRef.current.currentTime = seekTime;
-          }
-        }}
-        style={{
-          backgroundColor: '#1f2937'
-        }}
-      />
-
-      {/* SIMPLE PLAY BUTTON */}
-      {!isPlaying && (
-        <div 
-          className="absolute inset-0 flex items-center justify-center cursor-pointer"
-          onClick={handlePlayClick}
-        >
-          <div className="w-20 h-20 bg-white rounded-full flex items-center justify-center shadow-xl hover:scale-110 transition-transform">
-            <div className="w-0 h-0 border-l-[24px] border-l-gray-800 border-t-[16px] border-t-transparent border-b-[16px] border-b-transparent ml-2"></div>
-          </div>
+    <div className={`bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl overflow-hidden shadow-lg ${className}`}>
+      <div className="bg-slate-700 px-4 py-2 flex items-center justify-between">
+        <div className="flex items-center space-x-2">
+          <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+          <span className="text-white font-semibold text-sm">📹 {videoName}</span>
         </div>
-      )}
-
-      {/* SIMPLE INFO */}
-      <div className="absolute top-2 left-2 bg-black bg-opacity-70 text-white px-2 py-1 rounded text-xs font-bold">
-        🎥 {videoName}
+        <span className="text-slate-300 text-xs">Admin Preview</span>
+      </div>
+      <div className="p-3">
+        <video
+          src={src}
+          controls
+          preload="metadata"
+          className="w-full rounded-lg shadow-md"
+          style={{ maxHeight: '300px', backgroundColor: '#1f2937' }}
+          onError={(e) => {
+            e.currentTarget.style.display = 'block';
+          }}
+        >
+          <p className="text-white text-center py-4 text-sm">
+            Video preview unavailable
+          </p>
+        </video>
       </div>
     </div>
   );
@@ -3615,6 +3581,39 @@ Link: https://console.firebase.google.com/project/mdpu-website/authentication/us
                                     {news.status.toUpperCase()}
                                   </Badge>
                                 </div>
+
+                                {/* ADMIN VIDEO PREVIEW - MATCHING PUBLIC NEWS LAYOUT */}
+                                {news.videos && news.videos.length > 0 && (
+                                  <div className="mb-3">
+                                    {(() => {
+                                      const video = news.videos[0];
+                                      let videoSrc = video;
+                                      let videoName = 'Community Video';
+                                      
+                                      // Parse Firebase Storage metadata if present
+                                      if (video.startsWith('{')) {
+                                        try {
+                                          const metadata = JSON.parse(video);
+                                          if (metadata.url && metadata.name) {
+                                            videoSrc = metadata.url;
+                                            videoName = metadata.name;
+                                          }
+                                        } catch (e) {
+                                          videoSrc = video;
+                                        }
+                                      }
+                                      
+                                      return (
+                                        <AdminVideoPreview
+                                          src={videoSrc}
+                                          videoName={videoName}
+                                          index={0}
+                                          className="h-32 w-full"
+                                        />
+                                      );
+                                    })()}
+                                  </div>
+                                )}
                                 
                                 <p className="text-gray-600 text-sm mb-2 line-clamp-2">{news.summary}</p>
                                 

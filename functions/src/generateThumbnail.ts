@@ -25,3 +25,4 @@ export const generateVideoThumbnail = onCall(async (request) => {
     throw new Error(`Thumbnail generation failed: ${error}`);
   }
 });
+

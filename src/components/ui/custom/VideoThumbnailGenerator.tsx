@@ -181,3 +181,4 @@ export function VideoThumbnailGenerator({
 }
 
 export default VideoThumbnailGenerator;
+
